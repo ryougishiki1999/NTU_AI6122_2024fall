@@ -6,12 +6,12 @@
 
 ### Workflow (important!!!)
 
-Please read the linked doc [workflow](docs\workflow.md)
+Please read the linked doc [workflow](docs/workflow.md)
 
 
 ### RoadMap
 
-Please read the linked doc [project_structure](docs\project_structure.md)
+Please read the linked doc [project_structure](docs/project_structure.md)
 
 #### 1st development cycle
 
@@ -29,4 +29,4 @@ Build the basic structure of the project. Accomplish basic components and functi
 
 ### Misc
 
-some suggestions for the code style, please read the linked doc [code_style](docs\code_style.md)
+some suggestions for the code style, please read the linked doc [code_style](docs/code_style.md)
