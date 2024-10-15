@@ -19,8 +19,8 @@
 #### 3.1.1 创建远程分支
 
 **在远程仓库中创建一个新的分支**，比如`your_feature_name`，如下两图所示：
-![alt text](..\resource\attachment\remote_branch_1.png)
-![alt text](..\resource\attachment\remote_branch_2.png)
+![alt text](../resource/attachment/remote_branch_1.png)
+![alt text](../resource/attachment/remote_branch_2.png)
 
 #### 3.1.2 本地分支与远程分支关联
 ## **请注意master分支为我们的主线，请务必务必不要在上面直接开发！！！**
@@ -56,7 +56,7 @@ zhouzhou2分支已经track到origin/zhouzhou2分支
 
 #### 3.1.4 Pull Request
 在github网页端，仓库的`pull request`选项，点击`New pull request`，**选择你的分支和主线Master分支**，创建一个pull request
-![](..\resource\attachment\pull_request.png)
+![](../resource/attachment/pull_request.png)
 ## 然后就芜湖恭喜你了，你已经完成了你的任务，等待owner review你的代码吧！
 
 
