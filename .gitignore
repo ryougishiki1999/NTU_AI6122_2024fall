@@ -1,4 +1,9 @@
 data/
+out/
+indexdir/
+test/
+tmp/
+
 
 ## Python.gitignore
 # Byte-compiled / optimized / DLL files
