@@ -3,6 +3,8 @@ out/
 indexdir/
 test/
 tmp/
+.idea/
+.vscode/
 
 
 ## Python.gitignore

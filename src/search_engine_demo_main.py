@@ -17,6 +17,8 @@ from whoosh import index
 from whoosh.writing import AsyncWriter
 from datetime import datetime
 
+from searchEngine.engine_config import ORIGIN_REVIEW_DATA_PATH, TMP_DIR
+
 # design schema
 class ReviewSchema(SchemaClass):
     """
@@ -33,15 +35,14 @@ class ReviewSchema(SchemaClass):
     cool = NUMERIC(stored=True,decimal_places=0) 
 
 # create index
-index_dir = 'tmp/indexdir'
+index_dir = os.path.join(TMP_DIR, 'indexdir')
 if not os.path.exists(index_dir):
     os.makedirs(index_dir)
 
 ix = index.create_in(index_dir, schema=ReviewSchema, indexname="usages")
 ix2 = index.create_in(index_dir, ReviewSchema, indexname='test')
 
-
-json_file_path = "../resource/data/yelp_academic_dataset_review.json"
+json_file_path = ORIGIN_REVIEW_DATA_PATH
 num_lines_to_index = 1000
 
 with open(json_file_path, 'r', encoding='utf-8') as f:
