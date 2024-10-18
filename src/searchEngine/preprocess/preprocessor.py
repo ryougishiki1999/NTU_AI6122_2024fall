@@ -1,6 +1,6 @@
 from searchEngine.engine_config import DATA_DIR,\
-    ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSSIENESS_DATA_PATH,\
-    REVIEW_DATA_PATH, BUSSIENESS_DATA_PATH
+    ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH,\
+    REVIEW_DATA_PATH, BUSINESS_DATA_PATH
 
 class PreprocessorSingleton:
     _instance = None
@@ -22,8 +22,8 @@ class PreprocessorSingleton:
         Args:
             DATA_DIR: data directory
             ORIGIN_REVIEW_DATA_PATH: original review data path
-            ORIGIN_BUSSIENESS_DATA_PATH: original business data path
+            ORIGIN_BUSINESS_DATA_PATH: original business data path
             REVIEW_DATA_PATH: preprocessed review data path
-            BUSSIENESS_DATA_PATH: preprocessed business data
+            BUSINESS_DATA_PATH: preprocessed business data
         """
         pass

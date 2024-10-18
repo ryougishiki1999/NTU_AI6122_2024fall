@@ -8,7 +8,7 @@ OUT_DIR = os.path.join(PROJECT_ROOT, 'out')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp')
 
 ORIGIN_REVIEW_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_review.json')
-ORIGIN_BUSSIENESS_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_business.json')
+ORIGIN_BUSINESS_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_business.json')
 
 REVIEW_DATA_PATH = os.path.join(DATA_DIR, 'review.json')
-BUSSIENESS_DATA_PATH = os.path.join(DATA_DIR, 'business.json')
+BUSINESS_DATA_PATH = os.path.join(DATA_DIR, 'business.json')

@@ -1,10 +1,11 @@
 import ijson
 
-from searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
-from searchEngine.cores.query_parser import QueryParserAdapter
-from searchEngine.cores.schema import ReviewSchema
-from searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
-from searchEngine.engine_config import REVIEW_DATA_PATH
+from src.searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
+from src.searchEngine.cores.query_parser import QueryParserAdapter
+from src.searchEngine.cores.schema import ReviewSchema, BusinessSchema
+from src.searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
+from src.searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH
+
 
 from whoosh.qparser import QueryParser
 from whoosh.searching import Searcher
@@ -28,6 +29,12 @@ class SearchEngineSingleton:
             review_documents = ijson.items(f, 'item')
             self._index_manager.add_documents(IndexNames.REVIEWS, review_documents)
         # TODO: Create Business index, like the above process of Review index
+        # Create Business index
+        self._index_manager.create(IndexNames.BUSINESSES, BusinessSchema)  # 创建业务索引
+        with open(BUSINESS_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
+            business_documents = ijson.items(f, 'item')
+            self._index_manager.add_documents(IndexNames.BUSINESSES, business_documents)  # 添加业务文档
+
         
     def run(self):
         # Example:
