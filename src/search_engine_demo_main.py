@@ -40,7 +40,8 @@ if not os.path.exists(index_dir):
 ix = index.create_in(index_dir, schema=ReviewSchema, indexname="usages")
 ix2 = index.create_in(index_dir, ReviewSchema, indexname='test')
 
-json_file_path = "resource/data/yelp_academic_dataset_review.json"
+
+json_file_path = "../resource/data/yelp_academic_dataset_review.json"
 num_lines_to_index = 1000
 
 with open(json_file_path, 'r', encoding='utf-8') as f:
