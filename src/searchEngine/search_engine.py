@@ -6,7 +6,6 @@ from searchEngine.cores.schema import ReviewSchema, BusinessSchema
 from searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
 from searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH
 
-
 from whoosh.qparser import QueryParser
 from whoosh.searching import Searcher
 from whoosh.scoring import TF_IDF
