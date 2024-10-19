@@ -1,10 +1,10 @@
 import ijson
 
-from src.searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
-from src.searchEngine.cores.query_parser import QueryParserAdapter
-from src.searchEngine.cores.schema import ReviewSchema, BusinessSchema
-from src.searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
-from src.searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH
+from searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
+from searchEngine.cores.query_parser import QueryParserAdapter
+from searchEngine.cores.schema import ReviewSchema, BusinessSchema
+from searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
+from searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH
 
 
 from whoosh.qparser import QueryParser

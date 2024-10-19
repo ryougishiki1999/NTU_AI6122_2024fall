@@ -1,6 +1,5 @@
 from searchEngine.preprocess.preprocessor import PreprocessorSingleton
 from searchEngine.search_engine import SearchEngineSingleton
-from searchEngine.cores.index_manager import parse_hours
 
 
 if __name__ == "__main__":
