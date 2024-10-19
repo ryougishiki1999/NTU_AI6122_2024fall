@@ -19,6 +19,13 @@
 
 + `attachment/`：存放一些文档所需的图片附件等
 + `data/`：**yelp数据集放在这里，并且预处理过的JSON数据集也在这里**
+  + `CA/`：中间产生的数据文件
+  + `yelp_academic_dataset_business.json`：原始商家数据
+  + `yelp_academic_dataset_review.json`：原始评论数据
+  + `yelp_academic_dataset_user.json`：原始用户数据
+  + `business.json`：**生成的预处理后的商家数据**
+  + `review.json`：**生成的预处理后的评论数据**
+  + `user.json`：**生成的预处理后的用户数据**
 
 ### 项目文档`docs\`
 

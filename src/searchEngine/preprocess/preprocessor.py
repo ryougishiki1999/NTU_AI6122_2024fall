@@ -162,19 +162,19 @@ class PreprocessorSingleton:
         if self.flag:
             print("Preprocessing has been executed previously")
         else:
-            # # 1.1 处理 business 文件
-            # business_id = self.create_business_dataset(ORIGIN_BUSSIENESS_DATA_PATH, 'CA')
-            # print("已处理business文件")
-            # # 1.2 处理 review 文件
-            # CA_user_id = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)
-            # print("已处理review文件")
-            # # 1.3 处理 user 文件
-            # self.create_user_dataset(ORIGIN_USER_DATA_PATH, CA_user_id)
-            # print("已处理user文件")
+            # 1.1 处理 business 文件
+            business_id = self.create_business_dataset(ORIGIN_BUSSIENESS_DATA_PATH, 'CA')
+            print("已处理business文件")
+            # 1.2 处理 review 文件
+            CA_user_id = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)
+            print("已处理review文件")
+            # 1.3 处理 user 文件
+            self.create_user_dataset(ORIGIN_USER_DATA_PATH, CA_user_id)
+            print("已处理user文件")
 
-            # 2 对字段进行处理
-            # self.process_business_segment()
-            # print("business done")
+            #2 对字段进行处理
+            self.process_business_segment()
+            print("business done")
             self.process_review_segment()
             print("review done")
             self.process_user_segment()
