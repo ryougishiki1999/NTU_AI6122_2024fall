@@ -8,8 +8,6 @@ class SearcherAdpater:
     def search(self, query, **kwargs):
         with self._searcher as searcher:
             results = searcher.search(query, **kwargs)
-            for i, hit in enumerate(results):
-                print(f"top-{i+1}: ",hit['text'],'\n')
         return results
     
 class CustomizationSearcher(Searcher):

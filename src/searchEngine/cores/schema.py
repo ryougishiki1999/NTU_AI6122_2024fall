@@ -25,14 +25,13 @@ class BusinessSchema(SchemaClass):
     city = TEXT(stored=True)  # City where the business is located
     state = NGRAM(stored=True)  # 2 character state code
     postal_code = TEXT(stored=True)  # Postal code of the business
-    latitude = NUMERIC(stored=True)  # Latitude coordinate
-    longitude = NUMERIC(stored=True)  # Longitude coordinate
-
+    latitude = NUMERIC(stored=True, decimal_places=4)  # Latitude coordinate
+    longitude = NUMERIC(stored=True, decimal_places=4)  # Longitude coordinate
     # Star rating (rounded to half-stars)
-    stars = NUMERIC(stored=True)  # Star rating of the business
+    stars = NUMERIC(stored=True, decimal_places=2)  # Star rating of the business
     review_count = NUMERIC(stored=True, decimal_places=0)  # Count of reviews for the business
     is_open = BOOLEAN(stored=True)  # 0 or 1 indicating closed or open
     attributes = TEXT(stored=True)  # Attributes of the business stored as JSON string
-    categories = KEYWORD(stored=True, commas=True)  # Categories as a comma-separated string
+    categories = TEXT(stored=True)  # Categories as a comma-separated string
     # Business hours
-    hours = DATETIME(stored=True)  # Operating hours stored as JSON string
+    hours = TEXT(stored=True)  # Operating hours stored as JSON string

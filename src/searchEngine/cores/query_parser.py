@@ -20,7 +20,7 @@ class CustomizationParser(QueryParser):
         super().__init__(fieldname, schema, **kwargs)
     
     def _process_query(self):
-        """TODOL
+        """TODO
         Maybe self._query can be processed in a way that...
         """
         pass
