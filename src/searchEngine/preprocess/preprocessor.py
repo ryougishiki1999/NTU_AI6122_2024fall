@@ -8,9 +8,9 @@ import string
 from nltk.stem import WordNetLemmatizer
 
 from searchEngine.engine_config import \
-    ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSSIENESS_DATA_PATH,\
-    REVIEW_DATA_PATH, BUSSIENESS_DATA_PATH, CA_REVIEW_DATA_PATH,\
-    CA_USER_DATA_PATH, CA_BUSSIENESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USER_DATA_PATH, DATA_CA_DIR\
+    ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH,\
+    REVIEW_DATA_PATH, BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH,\
+    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USER_DATA_PATH, DATA_CA_DIR\
 
 class PreprocessorSingleton:
     _instance = None
@@ -24,7 +24,7 @@ class PreprocessorSingleton:
     def _initialize(self):
         self.flag = False
         if os.path.exists(REVIEW_DATA_PATH) and \
-                os.path.exists(BUSSIENESS_DATA_PATH) and\
+                os.path.exists(BUSINESS_DATA_PATH) and\
                 os.path.exists(USER_DATA_PATH):
             self.flag = True
 
@@ -53,7 +53,7 @@ class PreprocessorSingleton:
                     business_data.append(item)
                     business_id.add(item['business_id'])
         # 将列表保存到 json 文件
-        with open(CA_BUSSIENESS_DATA_PATH, 'w', encoding='utf-8') as f:
+        with open(CA_BUSINESS_DATA_PATH, 'w', encoding='utf-8') as f:
             json.dump(business_data, f, ensure_ascii=False, indent=4)  # ensure_ascii=False 保持非 ASCII 字符，indent=4 让输出美观
         return business_id
 
@@ -89,8 +89,8 @@ class PreprocessorSingleton:
 
         # 2.1 处理 business 文件，name 转成小写，categories 变成小写并去除标点符号
     def process_business_segment(self):
-        business_infile = CA_BUSSIENESS_DATA_PATH
-        business_outfile = BUSSIENESS_DATA_PATH
+        business_infile = CA_BUSINESS_DATA_PATH
+        business_outfile = BUSINESS_DATA_PATH
         with open(business_infile, 'r', encoding='utf-8') as infile:
             data = json.load(infile)
             for item in data:
@@ -155,9 +155,9 @@ class PreprocessorSingleton:
         Args:
             DATA_DIR: data directory
             ORIGIN_REVIEW_DATA_PATH: original review data path
-            ORIGIN_BUSSIENESS_DATA_PATH: original business data path
+            ORIGIN_BUSINESS_DATA_PATH: original business data path
             REVIEW_DATA_PATH: preprocessed review data path
-            BUSSIENESS_DATA_PATH: preprocessed business data
+            BUSINESS_DATA_PATH: preprocessed business data
         """
         if self.flag:
             print("Preprocessing has been executed previously")

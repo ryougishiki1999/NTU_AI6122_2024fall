@@ -9,13 +9,13 @@ OUT_DIR = os.path.join(PROJECT_ROOT, 'out')
 TMP_DIR = os.path.join(PROJECT_ROOT, 'tmp')
 
 ORIGIN_REVIEW_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_review.json')
-ORIGIN_BUSSIENESS_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_business.json')
+ORIGIN_BUSINESS_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_business.json')
 ORIGIN_USER_DATA_PATH = os.path.join(DATA_DIR, 'yelp_academic_dataset_user.json')
 
 CA_REVIEW_DATA_PATH = os.path.join(DATA_CA_DIR, 'CA_review.json')
-CA_BUSSIENESS_DATA_PATH = os.path.join(DATA_CA_DIR, 'CA_business.json')
+CA_BUSINESS_DATA_PATH = os.path.join(DATA_CA_DIR, 'CA_business.json')
 CA_USER_DATA_PATH = os.path.join(DATA_CA_DIR, 'CA_user.json')
 
 REVIEW_DATA_PATH = os.path.join(DATA_DIR, 'review.json')
-BUSSIENESS_DATA_PATH = os.path.join(DATA_DIR, 'business.json')
+BUSINESS_DATA_PATH = os.path.join(DATA_DIR, 'business.json')
 USER_DATA_PATH = os.path.join(DATA_DIR, 'user.json')
