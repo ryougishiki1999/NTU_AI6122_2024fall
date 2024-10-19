@@ -8,7 +8,7 @@ import string
 from nltk.stem import WordNetLemmatizer
 
 from searchEngine.engine_config import \
-    ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH,\
+    DATA_PREPROCESS_DIR, ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH,\
     REVIEW_DATA_PATH, BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH,\
     CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USER_DATA_PATH, DATA_CA_DIR\
 
@@ -23,6 +23,12 @@ class PreprocessorSingleton:
     
     def _initialize(self):
         self.flag = False
+        if not os.path.exists(DATA_CA_DIR):
+            os.mkdir(DATA_CA_DIR)
+            
+        if not os.path.exists(DATA_PREPROCESS_DIR):
+            os.mkdir(DATA_PREPROCESS_DIR)
+        
         if os.path.exists(REVIEW_DATA_PATH) and \
                 os.path.exists(BUSINESS_DATA_PATH) and\
                 os.path.exists(USER_DATA_PATH):
@@ -38,8 +44,7 @@ class PreprocessorSingleton:
             nltk.download('omw-1.4')
             print("successfully download nltk resources")
 
-        if not os.path.exists(DATA_CA_DIR):
-            os.mkdir(DATA_CA_DIR)
+
 
     # 1.1 处理 business 文件: 筛选出CA这个州的店铺，并保留 business id
     def create_business_dataset(self,business_file, state):
@@ -148,7 +153,7 @@ class PreprocessorSingleton:
             json.dump(data, outfile, indent=4)  # 使用indent=4进行格式化输出
     
     def run(self):
-        """TODO:
+        """
         Run the preprocessor to preprocess JSON files.
         Generate the preprocessed JSON files under DATA_DIR(`source/data/`)
         
@@ -163,7 +168,7 @@ class PreprocessorSingleton:
             print("Preprocessing has been executed previously")
         else:
             # 1.1 处理 business 文件
-            business_id = self.create_business_dataset(ORIGIN_BUSSIENESS_DATA_PATH, 'CA')
+            business_id = self.create_business_dataset(ORIGIN_BUSINESS_DATA_PATH, 'CA')
             print("已处理business文件")
             # 1.2 处理 review 文件
             CA_user_id = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)

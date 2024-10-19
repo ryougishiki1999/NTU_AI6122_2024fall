@@ -1,52 +1,49 @@
 from datetime import datetime
+import shutil
 from typing import Generator
 import os
 from enum import Enum
+import json
+import time
 
 from whoosh import index
 from whoosh.fields import Schema
+from whoosh.writing import BufferedWriter
+
+from searchEngine.engine_config import INDEX_DIR, INDEX_BUFFER_SIZE, INDEX_BUFFER_PERIOD
+
+
 class IndexNames(Enum):
     REVIEWS = "reviews"
     BUSINESSES = "businesses"
+    USERS = 'users'
 
-from whoosh.writing import AsyncWriter
-
-
-from src.searchEngine.engine_config import INDEX_DIR
-
-def parse_hours(hours):
-    # 示例: 假设 hours 是一个字典或字符串
-    if isinstance(hours, dict):
-        # 如果 hours 是字典，直接返回
-        return hours
-    elif isinstance(hours, str):
-        # 假设 hours 是字符串格式，进行简单的解析
-        return {"open": hours.split('-')[0], "close": hours.split('-')[1]}
-    return None  # 如果不符合格式，返回 None
 
 class IndexManagerSingleton:
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(IndexManagerSingleton, cls).__new__(cls)
             cls._instance._initialzie()
         return cls._instance
-    
+
     def _initialzie(self):
         self._indices = {}
+        if os.path.exists(INDEX_DIR):
+            shutil.rmtree(INDEX_DIR)
         if not os.path.exists(INDEX_DIR):
             os.makedirs(INDEX_DIR)
-            
+
     def create(self,
-        index_name: IndexNames, schema: Schema):
+               index_name: IndexNames, schema: Schema):
         ix = index.create_in(
             INDEX_DIR,
             schema=schema,
             indexname=index_name.value
         )
         self._indices[index_name] = ix
-        
+
     def open(self, index_name: IndexNames):
         self._indices[index_name] = index.open_dir(
             INDEX_DIR,
@@ -56,34 +53,39 @@ class IndexManagerSingleton:
 
     def add_documents(self, index_name: IndexNames, documents: Generator):
         def _doc_process(doc):
-            print(f"Original document: {doc}")  # 打印原始文档，用于调试
             if index_name == IndexNames.REVIEWS:
                 # 将日期字符串转换为 datetime 对象
                 doc['date'] = datetime.strptime(doc['date'], '%Y-%m-%d %H:%M:%S')
             elif index_name == IndexNames.BUSINESSES:
                 # 处理 hours 字段
                 if 'hours' in doc:
-                    doc['hours'] = parse_hours(doc['hours'])
-                # 处理 'ByAppointmentOnly' 字段
-                if 'ByAppointmentOnly' in doc:
-                    # 如果字段是字典，提取值；如果是字符串，直接使用
-                    if isinstance(doc['ByAppointmentOnly'], dict):
-                        doc['ByAppointmentOnly'] = str(doc['ByAppointmentOnly'].get('ByAppointmentOnly', 'False'))
-                    else:
-                        doc['ByAppointmentOnly'] = str(doc['ByAppointmentOnly'])
+                    doc['hours'] = json.dumps(doc['hours'])
+                # 处理 'attributes' 字段
+                if 'attributes' in doc:
+                    doc['attributes'] = json.dumps(doc['attributes'])
+                # solve the 'categories' field
+                if 'categories' in doc:
+                    doc['categories'] = json.dumps(doc['categories'])
+            elif index_name == IndexNames.USERS:
+                if 'yelping_since' in doc:
+                    doc['yelping_since'] = datetime.strptime(doc['yelping_since'], '%Y-%m-%d %H:%M:%S')
+                if 'friends' in doc:
+                    doc['friends'] = json.dumps(doc['friends'])
+                if 'elite' in doc:
+                    doc['elite'] = ','.join(map(str, doc['elite']))
             return doc
 
         ix = self.open(index_name)
-        with AsyncWriter(ix) as writer:
-            for count, doc in enumerate(documents):
-                # tmp: For test convenience,
-                # limit the number of documents to be added
-                if count >= 1000:
-                    break
-                # tmp
-                doc = _doc_process(doc)
-                writer.add_document(**doc)
-            print(f"Added {count} documents to {index_name.value} index")
-            
-
-        
+        start_time = time.time()
+        # TODO: BufferedWriter may be better, but it can't work in expected way.
+        # I don't know why.
+        # TODO: load review.json too slow, need to optimize
+        writer = ix.writer(buffering=INDEX_BUFFER_SIZE)
+        for count, doc in enumerate(documents):
+            doc = _doc_process(doc)
+            writer.add_document(**doc)
+            if count % INDEX_BUFFER_SIZE == 0 and count > 0:
+                print(f"Added {count} documents to {index_name.value} index")
+        writer.commit()
+        end_time = time.time()
+        print(f"Added {count} documents to {index_name.value} index, Time cost: {end_time - start_time:.2f} seconds")
