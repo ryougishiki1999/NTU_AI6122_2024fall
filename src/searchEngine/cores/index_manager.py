@@ -18,7 +18,6 @@ class IndexNames(Enum):
     BUSINESSES = "businesses"
     USERS = 'users'
 
-
 class IndexManagerSingleton:
     _instance = None
 
@@ -63,6 +62,7 @@ class IndexManagerSingleton:
                 # 处理 'attributes' 字段
                 if 'attributes' in doc:
                     doc['attributes'] = json.dumps(doc['attributes'])
+
                 # solve the 'categories' field
                 if 'categories' in doc:
                     doc['categories'] = json.dumps(doc['categories'])
@@ -80,7 +80,8 @@ class IndexManagerSingleton:
         # TODO: BufferedWriter may be better, but it can't work in expected way.
         # I don't know why.
         # TODO: load review.json too slow, need to optimize
-        writer = ix.writer(buffering=INDEX_BUFFER_SIZE)
+        writer = ix.writer(buffering = INDEX_BUFFER_SIZE)
+
         for count, doc in enumerate(documents):
             doc = _doc_process(doc)
             writer.add_document(**doc)
@@ -88,4 +89,5 @@ class IndexManagerSingleton:
                 print(f"Added {count} documents to {index_name.value} index")
         writer.commit()
         end_time = time.time()
+
         print(f"Added {count} documents to {index_name.value} index, Time cost: {end_time - start_time:.2f} seconds")

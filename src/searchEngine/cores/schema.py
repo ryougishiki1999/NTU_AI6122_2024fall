@@ -38,7 +38,6 @@ class BusinessSchema(SchemaClass):
     # Business hours
     hours = TEXT(stored=True)  # Operating hours stored as JSON string
 
-
 class UserSchema(SchemaClass):
     """Schema for the user index."""
     user_id = ID(stored=True, unique=True)
@@ -64,3 +63,4 @@ class UserSchema(SchemaClass):
     compliment_funny = NUMERIC(stored=True, decimal_places=0)
     compliment_writer = NUMERIC(stored=True, decimal_places=0)
     compliment_photos = NUMERIC(stored=True, decimal_places=0)
+

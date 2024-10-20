@@ -11,7 +11,6 @@ from whoosh.searching import Searcher
 from whoosh.scoring import TF_IDF
 from whoosh.scoring import BM25F
 
-
 class SearchEngineSingleton:
     _instance = None
 
@@ -40,6 +39,7 @@ class SearchEngineSingleton:
             user_documents = ijson.items(f, 'item')
             self._index_manager.add_documents(IndexNames.USERS, user_documents)  # 添加用户文档
 
+
     def run(self):
         # Example:
         # Search for the query "wonderful AND experience" for "text" filed on review.json
@@ -54,18 +54,18 @@ class SearchEngineSingleton:
         # QueryParserAdapter, initialize with QueryParser and its subclasses.
         query_paser_adapter = QueryParserAdapter(query_parser, text)
         query = query_paser_adapter.parse()
-
+        
         top_n = 5
-        weighting = TF_IDF()
+        weighting = TF_IDF()        
         searcher = Searcher(review_idx.reader(), weighting=weighting) # searcher = review_idx.searcher(weighting=weighting)
         # SearcherAdpater, the same as QueryParserAdapter
         searcher_adapter = SearcherAdpater(searcher)
         results = searcher_adapter.search(query, limit=top_n)
         print(results, "\n review search done")
-
-        # Search for the query "wonderful AND experience" for
+        
+        # Search for the query "wonderful AND experience" for 
         # `attributes` field on review.json
-        print("Start business search")
+        print("start business search")
         field_name = "attributes"
         business_idx = self._index_manager.open(IndexNames.BUSINESSES)
         schema = business_idx.schema
@@ -94,3 +94,4 @@ class SearchEngineSingleton:
         searcher_adapter = SearcherAdpater(searcher)
         results = searcher_adapter.search(query, limit=top_n)
         print(results, "\n User search done")
+
