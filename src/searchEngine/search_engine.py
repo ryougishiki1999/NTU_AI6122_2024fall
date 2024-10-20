@@ -2,9 +2,9 @@ import ijson
 
 from searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
 from searchEngine.cores.query_parser import QueryParserAdapter
-from searchEngine.cores.schema import ReviewSchema, BusinessSchema
+from searchEngine.cores.schema import ReviewSchema, BusinessSchema, UserSchema
 from searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
-from searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH
+from searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH, USER_DATA_PATH
 
 from whoosh.qparser import QueryParser
 from whoosh.searching import Searcher
@@ -13,13 +13,13 @@ from whoosh.scoring import BM25F
 
 class SearchEngineSingleton:
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super(SearchEngineSingleton, cls).__new__(cls)
             cls._instance._initialize()
         return cls._instance
-    
+
     def _initialize(self):
         # Create the index manager
         self._index_manager = IndexManagerSingleton()
@@ -33,9 +33,13 @@ class SearchEngineSingleton:
         with open(BUSINESS_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
             business_documents = ijson.items(f, 'item')
             self._index_manager.add_documents(IndexNames.BUSINESSES, business_documents)  # 添加业务文档
-            
+        # Create User index
+        self._index_manager.create(IndexNames.USERS, UserSchema)  # 创建用户索引
+        with open(USER_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
+            user_documents = ijson.items(f, 'item')
+            self._index_manager.add_documents(IndexNames.USERS, user_documents)  # 添加用户文档
 
-        
+
     def run(self):
         # Example:
         # Search for the query "wonderful AND experience" for "text" filed on review.json
@@ -75,7 +79,19 @@ class SearchEngineSingleton:
         searcher_adapter = SearcherAdpater(searcher)
         results = searcher_adapter.search(query, limit=top_n)
         print(results, "\n business search done")
-        
-        
-        
-        
+
+        print("Start user search")
+        field_name = "compliment_cute"
+        user_idx = self._index_manager.open(IndexNames.USERS)
+        schema = user_idx.schema
+        compliment_cute = "0"
+        query_parser = QueryParser(field_name, schema)
+        query_paser_adapter = QueryParserAdapter(query_parser, compliment_cute)
+        query = query_paser_adapter.parse()
+        top_n = 5
+        weighting = BM25F()
+        searcher = Searcher(user_idx.reader(), weighting=weighting)
+        searcher_adapter = SearcherAdpater(searcher)
+        results = searcher_adapter.search(query, limit=top_n)
+        print(results, "\n User search done")
+
