@@ -12,7 +12,7 @@ If you need additional packages during your development, please add them in `env
 
 #### Dataset Preparation
 
-Consider the dataset is too large to upload to the remote repository, please download the dataset from [yelp](https://www.yelp.com/dataset) and **put `yelp_academic_dataset_business.json` and `yelp_academic_dataset_review.json` under the `resource/data` folder.**
+Consider the dataset is too large to upload to the remote repository, please download the dataset from [yelp](https://www.yelp.com/dataset) and **put `yelp_academic_dataset_business.json` and `yelp_academic_dataset_review.json` and `yelp_academic_dataset_user.json` under the `resource/data` folder.**
 
 #### Run the code
 
