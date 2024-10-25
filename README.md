@@ -7,8 +7,20 @@
 #### Conda Environment Preparation
 
 After `git clone` this code framework, please first install the required packages **according to `environment.yml` using Conda.**
+run:
+```
+conda env create -n <your_env_name> --file environment.yml
+```
 
-If you need additional packages during your development, please add them in `environment.yml`, then use `conda env update -f environment.yml` to update your environment.
+If you need additional packages during your development, please add them in `environment.yml`, then re-create `environment.yml`:
+```
+conda env export > environment.yml
+```
+If you need to update your environment (if there is new version of environment.yml), please run:
+```
+conda env update -f environment.yml
+```
+to update your environment.
 
 #### Dataset Preparation
 

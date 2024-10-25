@@ -6,8 +6,8 @@ class SearcherAdpater:
         self._searcher = searcher
         
     def search(self, query, **kwargs):
-        with self._searcher as searcher:
-            results = searcher.search(query, **kwargs)
+        searcher = self._searcher
+        results = searcher.search(query, **kwargs)
         return results
     
 class CustomizationSearcher(Searcher):
@@ -22,4 +22,3 @@ class CustomizationSearcher(Searcher):
         Args:
             query (str): query string
         """
-        pass

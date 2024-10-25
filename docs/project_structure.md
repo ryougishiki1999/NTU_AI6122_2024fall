@@ -6,10 +6,10 @@
 
 + `searchEngine/`
   + `cores/`
-    + `index_manager.py`: 构建索引
-    + `query_parser.py`: 构建Query
-    + `schema.py`：定义索引的schema
-    + `searcher_ranking_sorting.py`: 搜索结果排序
+    + `index_manager.py`: 构建索引，管理索引创建和加入文档等
+    + `query_parser.py`: 构建Query，功能增强
+    + `schema.py`：定义索引各自的schema
+    + `searcher_ranking.py`: 搜索结果排序功能增强
   + `preprocess/`:
     + `preprocessor.py`: 预处理数据, 将原始JSON文件预处理生成新的JSON文件
 + `search_engine_main.py`: 搜索引擎程序主入口
@@ -20,7 +20,7 @@
 + `attachment/`：存放一些文档所需的图片附件等
 + `data/`：**yelp数据集放在这里，并且预处理过的JSON数据集也在这里**
   + `CA/`：中间产生的数据文件
-  + `Preprocessed/`: 预处理后的数据文件存放在这里
+  + `preprocessed/`: 预处理后的数据文件存放在这里
     + `business.json`：**生成的预处理后的商家数据**
     + `review.json`：**生成的预处理后的评论数据**
     + `user.json`：**生成的预处理后的用户数据**

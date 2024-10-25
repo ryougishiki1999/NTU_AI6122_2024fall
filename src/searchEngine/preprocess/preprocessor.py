@@ -131,7 +131,7 @@ class PreprocessorSingleton:
                 lemmatizer = WordNetLemmatizer()
                 lemmatized_texts = [lemmatizer.lemmatize(word) for word in clean_tokens]
                 # 统一大小写
-                processed_texts = [word.lower() for word in clean_tokens]
+                processed_texts = [word.lower() for word in lemmatized_texts]
                 # 还原成 string 形式
                 processed_texts = ' '.join(processed_texts)
                 item['text'] = processed_texts

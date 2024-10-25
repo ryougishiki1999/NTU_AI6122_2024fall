@@ -1,5 +1,4 @@
 from whoosh.qparser import QueryParser, MultifieldParser
-from whoosh.fields import Schema, TEXT, NUMERIC
 from whoosh.qparser.plugins import FuzzyTermPlugin
 from whoosh.query import And, Or, NumericRange
 import json
@@ -16,7 +15,7 @@ class QueryParserAdapter:
         return self._parser.parse(self._text, **kwargs)
     
     
-class CustomizationParser(QueryParser):
+class CustomizationQueryParser(QueryParser):
     
     def __init__(self, fieldname, schema, **kwargs):
         super().__init__(fieldname, schema)

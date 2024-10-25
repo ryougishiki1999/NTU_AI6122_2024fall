@@ -2,14 +2,13 @@ import ijson
 
 from searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
 from searchEngine.cores.query_parser import QueryParserAdapter
-from searchEngine.cores.schema import ReviewSchema, BusinessSchema, UserSchema
-from searchEngine.cores.searcher_ranking_sorting import SearcherAdpater
-from searchEngine.engine_config import REVIEW_DATA_PATH, BUSINESS_DATA_PATH, USER_DATA_PATH
+from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
+from searchEngine.cores.searcher_ranking import SearcherAdpater
+from searchEngine.engine_config import BUSINESS_DATA_PATH, REVIEW_DATA_PATH, USER_DATA_PATH
 
 from whoosh.qparser import QueryParser
 from whoosh.searching import Searcher
-from whoosh.scoring import TF_IDF
-from whoosh.scoring import BM25F
+from whoosh.scoring import TF_IDF, BM25F
 
 class SearchEngineSingleton:
     _instance = None
@@ -49,49 +48,64 @@ class SearchEngineSingleton:
         field_name = "text"
         review_idx = self._index_manager.open(IndexNames.REVIEWS)
         schema = review_idx.schema
-        text = "wonderful AND experience"
+        query_data = "wonderful AND experience"
         query_parser = QueryParser(field_name, schema)
-        # QueryParserAdapter, initialize with QueryParser and its subclasses.
-        query_paser_adapter = QueryParserAdapter(query_parser, text)
+        query_paser_adapter = QueryParserAdapter(query_parser, query_data)
         query = query_paser_adapter.parse()
-        
         top_n = 5
-        weighting = TF_IDF()        
-        searcher = Searcher(review_idx.reader(), weighting=weighting) # searcher = review_idx.searcher(weighting=weighting)
-        # SearcherAdpater, the same as QueryParserAdapter
-        searcher_adapter = SearcherAdpater(searcher)
-        results = searcher_adapter.search(query, limit=top_n)
-        print(results, "\n review search done")
+        weighting = TF_IDF()
+        try:    
+            searcher = Searcher(review_idx.reader(), weighting=weighting) # searcher = review_idx.searcher(weighting=weighting)
+            searcher_adapter = SearcherAdpater(searcher)
+            results = searcher_adapter.search(query, limit=top_n)
+            for i in range(results.scored_length()):
+                print(f"top-{i+1}: ", results[i], '\n')
+            print(results, "\n review search done\n")
+        finally:
+            searcher.close()
         
-        # Search for the query "wonderful AND experience" for 
-        # `attributes` field on review.json
+        # Example:
+        # Search for the query "food AND restaurant" for 
+        # `categories` field on bussiness.json
         print("start business search")
-        field_name = "attributes"
+        field_name = "categories"
         business_idx = self._index_manager.open(IndexNames.BUSINESSES)
         schema = business_idx.schema
-        text = "RestaurantsTakeOut AND True"
+        query_data = "food AND restaurants"
         query_parser = QueryParser(field_name, schema)
-        query_paser_adapter = QueryParserAdapter(query_parser, text)
+        query_paser_adapter = QueryParserAdapter(query_parser, query_data)
         query = query_paser_adapter.parse()
         top_n = 5
         weighting = BM25F()
-        searcher = Searcher(business_idx.reader(), weighting=weighting)
-        searcher_adapter = SearcherAdpater(searcher)
-        results = searcher_adapter.search(query, limit=top_n)
-        print(results, "\n business search done")
+        try:
+            searcher = Searcher(business_idx.reader(), weighting=weighting)
+            searcher_adapter = SearcherAdpater(searcher)
+            results = searcher_adapter.search(query, limit=top_n)
+            for i in range(results.scored_length()):
+                print(f"top-{i+1}: ", results[i], '\n')
+            print(results, "\n business search done \n")
+        finally:
+            searcher.close()
 
-        print("Start user search")
-        field_name = "compliment_cute"
+        # Example:
+        # Search for the query "fernanda" for `name` field on user.json
+        print("start user search")
+        field_name = "name"
         user_idx = self._index_manager.open(IndexNames.USERS)
         schema = user_idx.schema
-        compliment_cute = "0"
+        query_data = "fernanda"
         query_parser = QueryParser(field_name, schema)
-        query_paser_adapter = QueryParserAdapter(query_parser, compliment_cute)
+        query_paser_adapter = QueryParserAdapter(query_parser, query_data)
         query = query_paser_adapter.parse()
         top_n = 5
-        weighting = BM25F()
-        searcher = Searcher(user_idx.reader(), weighting=weighting)
-        searcher_adapter = SearcherAdpater(searcher)
-        results = searcher_adapter.search(query, limit=top_n)
-        print(results, "\n User search done")
+        try:
+            searcher = Searcher(user_idx.reader())
+            searcher_adapter = SearcherAdpater(searcher)
+            results = searcher_adapter.search(query, limit = top_n)
+            for i in range(results.scored_length()):
+                print(f"top-{i+1}: ", results[i], '\n')
+            print(results, "\n User search done\n")
+        finally:
+            searcher.close()
+       
 
