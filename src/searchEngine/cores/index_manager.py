@@ -7,7 +7,8 @@ import time
 from whoosh import index
 from whoosh.fields import Schema
 
-from searchEngine.engine_config import INDEX_DIR, BUSINESS_DOC_NUM, INDEX_DIR_FLAG_FILE, REVIEW_DOC_NUM, USER_DOC_NUM
+from searchEngine.engine_config import INDEX_DIR, BUSINESS_DOC_NUM, \
+    INDEX_DIR_FLAG_FILE, REVIEW_DOC_NUM, USE_SKIP_INDEX_BUILDING, USER_DOC_NUM
 
 
 class IndexNames(Enum):
@@ -41,7 +42,7 @@ class IndexManagerSingleton:
         
         # help to check whether the index has been built,
         # targeting to skip the building process if the index has already existed
-        if os.path.exists(INDEX_DIR_FLAG_FILE):
+        if USE_SKIP_INDEX_BUILDING and os.path.exists(INDEX_DIR_FLAG_FILE):
             self._load_indices_flags()
             for index_name in IndexNames:
                 self._indices_flags[index_name.value] &= index.exists_in(INDEX_DIR, indexname=index_name.value)

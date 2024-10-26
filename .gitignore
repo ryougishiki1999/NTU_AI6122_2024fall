@@ -5,6 +5,7 @@ test/
 tmp/
 .idea/
 .vscode/
+*.code-workspace
 
 
 ## Python.gitignore

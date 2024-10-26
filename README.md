@@ -50,17 +50,15 @@ Please read the linked doc [project_structure](docs/project_structure.md)
 
 #### 1st development cycle
 
-Build the basic structure of the project. Accomplish basic components and functions.
+Build the basic structure of the project. Accomplish basic components and functions of search engine.
 
-| Module       | Submodule         | Current Maintainer | Notes |
-|--------------|-------------------|--------------------|-------|
-| preprocessor | tokenization      | Li JiaLi           |       |
-| preprocessor | stop-word removal | Li JiaLi           |       |
-| preprocessor | REPL              |                    |       |
-| Core         | Index             |                    |       |
-| Core         | Query             |                    |       |
-| Core         | Ranking           |                    |       |
-| utility      | review summary    | Pan Feng           |       |
+| Module       | Submodule     | Current Maintainer         | Notes                                                                                    |
+|--------------|---------------|----------------------------|------------------------------------------------------------------------------------------|
+| preprocessor | preprocessor  | Li JiaLi                   | Tokenization, case-folding, lemmatization, stop-word removal                             |
+| core         | Index_Manager | Zhou RuoHeng, Dai MengMeng | Design the manager responsible for creating or opening Index, adding documents for Index |
+| core         | Schema        | Zhou RuoHeng, Dai MengMeng | Design the corresponding Schema for the specific Index                                   |
+| core         | Query_Parser  | PanFeng                    | Design Customization query paraser to handle complex query raw input                     |
+| Framework    |               | Zhou RuoHeng               | structure of project, the design of workflow, e.t.c                                      |
 
 ### Misc
 
