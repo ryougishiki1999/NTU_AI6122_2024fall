@@ -20,7 +20,7 @@ from datetime import datetime
 from searchEngine.engine_config import ORIGIN_REVIEW_DATA_PATH, TMP_DIR
 
 # design schema
-class ReviewSchema(SchemaClass):
+class UsageSchema(SchemaClass):
     """
     Schema for the reviews index.
     """
@@ -43,9 +43,9 @@ if index.exists_in(index_dir, indexname="usages"):
 else:
     # create index
     print("Creating index...")
-    ix = index.create_in(index_dir, schema=ReviewSchema, indexname="usages")
+    ix = index.create_in(index_dir, schema=UsageSchema, indexname="usages")
     # create_in will delete the existing index with the same name
-    ix2 = index.create_in(index_dir, ReviewSchema, indexname='test')
+    ix2 = index.create_in(index_dir, UsageSchema, indexname='test')
 
     json_file_path = ORIGIN_REVIEW_DATA_PATH
     num_lines_to_index = 1000
@@ -79,7 +79,7 @@ else:
 # generate query
 from whoosh.qparser import QueryParser
 ix = index.open_dir(index_dir, indexname="usages")
-parser = QueryParser("text", ix.schema)
+parser = QueryParser("text",UsageSchema())
 query = parser.parse("wonderful AND experience")
 
 # execute search and scoring and sorting

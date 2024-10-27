@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 
 search_engine_dir = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(os.path.dirname(search_engine_dir))
@@ -27,4 +28,16 @@ BUSINESS_DOC_NUM = 5202
 USER_DOC_NUM = 155947
 TOTAL_DOC_NUM = REVIEW_DOC_NUM + BUSINESS_DOC_NUM + USER_DOC_NUM
 
+TOP_K = 10 
+
 USE_SKIP_INDEX_BUILDING = True # True: use index already existed in INDEX_DIR, False: build index from scratch
+
+class IndexNames(Enum):
+    REVIEWS = "reviews"
+    BUSINESSES = "businesses"
+    USERS = 'users'
+
+class QueryType(Enum):
+    BUSINESS = ["name","categories"]
+    REVIEW = ["text"]
+    GEOSPATIAL = ["latitude", "longitude"]
