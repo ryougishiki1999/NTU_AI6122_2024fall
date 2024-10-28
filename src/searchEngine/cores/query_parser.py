@@ -5,28 +5,38 @@ import json
 from dateparser.search import search_dates
 from whoosh.analysis import StemmingAnalyzer
 
+from searchEngine.engine_config import QueryType
+from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
 
-class QueryParserAdapter:
-    def __init__(self, schema):
+
+class QueryParserWrapper:
+    _instance = None 
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(QueryParserWrapper, cls).__new__(cls)
+            cls._instance._initialize()
+        return cls._instance
+    
+    def _initialize(self):
         # Define three query types with corresponding parsers
         self.parsers = {
-            "review_query": QueryParser("text", schema),
-            "business_query": QueryParser(["name", "categories"], schema),  
-            "geospatial_query": QueryParser(["latitude", "longitude"], schema)  
+            QueryType.REVIEW : QueryParser(QueryType.REVIEW.value, ReviewSchema()),
+            QueryType.BUSINESS: QueryParser(QueryType.BUSINESS.value, BusinessSchema()),  
+            QueryType.GEOSPATIAL: QueryParser(QueryType.GEOSPATIAL.value, BusinessSchema())  
         }
-            
         #self._parser = query_parser
         #self._text = text
     def identify_query_type(self, user_input):
         """ Identify the type of query based on the user input string. """
-        if any(key in user_input for key in ["review", "text"]):  # Include "text" as an indicator for review queries
-            return "review_query"
-        elif any(key in user_input for key in ["name", "categories"]):
-            return "business_query"
-        elif all(key in user_input for key in ["latitude", "longitude"]):
-            return "geospatial_query"
+        if any(key in user_input for key in QueryType.REVIEW.value):  # Include "text" as an indicator for review queries
+            return QueryType.REVIEW
+        elif any(key in user_input for key in QueryType.BUSINESS.value):  # Include "name" as an indicator for business queries
+            return QueryType.BUSINESS
+        elif all(key in user_input for key in QueryType.GEOSPATIAL.value):
+            return QueryType.GEOSPATIAL
         else:
-            return "Illegal"
+            return QueryType.ILLEGAL
 
 
     def generate_query_and_parse(self, user_input):
@@ -40,35 +50,29 @@ class QueryParserAdapter:
             tuple: (query_type, query_object) or ("Illegal", None) if not matched.
         """
         query_type = self.identify_query_type(user_input)
-        if query_type == "Illegal":
+        if query_type == QueryType.ILLEGAL:
             return query_type, None
         
         parser = self.parsers.get(query_type)
         if not parser:
-            return "Illegal", None
+            return QueryType.ILLEGAL, None
 
         target_fields = parser.fieldname if isinstance(parser.fieldname, list) else [parser.fieldname]
         
         try:
             customization_parser = CustomizationQueryParser(fieldnames=target_fields, fieldname=target_fields[0], schema=parser.schema)
-            parsed_query_data = customization_parser._process_query(user_input)
+            parsed_query_data = customization_parser.process_query(user_input)
             combined_query = customization_parser.combined_parse_query(**parsed_query_data)
         except ValueError:
-            return "Illegal", None
+            return QueryType.ILLEGAL, None
 
         return query_type, combined_query if combined_query else (query_type, None)
-    def _apply_fuzzy_matching(self, text, use_fuzzy=True):
-        """Applies fuzzy matching based on user preference."""
-        if use_fuzzy:
-            return " ".join([f"{word}~" for word in text.split()])
-        return text
-
-    #def parse(self,use_fuzzy=False, **kwargs):
-
-        # If the query data is structured as JSON, process it using _process_query
-        #parsed_query_data = self._parser._process_query(self._text)
-        # If combined parsing is needed, handle that here
-        #return self._parser.combined_parse_query(**parsed_query_data)  
+    
+    # def _apply_fuzzy_matching(self, text, use_fuzzy=True):
+    #     """Applies fuzzy matching based on user preference."""
+    #     if use_fuzzy:
+    #         return " ".join([f"{word}~" for word in text.split()])
+    #     return text 
         
 class CustomizationQueryParser(QueryParser):
     
@@ -90,7 +94,7 @@ class CustomizationQueryParser(QueryParser):
         #if self.business_column not in schema or self.review_column not in schema or self.latitude_column not in schema or self.longitude_column not in schema:
         #   raise ValueError("Schema do not have the columns for business or review or longitude or latitude search.")
           
-    def _process_query(self, query_data):
+    def process_query(self, query_data):
         """
         Process the query data, extracting relevant fields for search.
         
