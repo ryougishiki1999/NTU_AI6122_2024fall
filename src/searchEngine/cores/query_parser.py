@@ -7,30 +7,84 @@ from whoosh.analysis import StemmingAnalyzer
 
 
 class QueryParserAdapter:
-    def __init__(self, query_parser: QueryParser, text: str):
-        self._parser = query_parser
-        self._text = text
+    def __init__(self, schema):
+        # Define three query types with corresponding parsers
+        self.parsers = {
+            "review_query": QueryParser("text", schema),
+            "business_query": QueryParser(["name", "categories"], schema),  
+            "geospatial_query": QueryParser(["latitude", "longitude"], schema)  
+        }
+            
+        #self._parser = query_parser
+        #self._text = text
+    def identify_query_type(self, user_input):
+        """ Identify the type of query based on the user input string. """
+        if any(key in user_input for key in ["review", "text"]):  # Include "text" as an indicator for review queries
+            return "review_query"
+        elif any(key in user_input for key in ["name", "categories"]):
+            return "business_query"
+        elif all(key in user_input for key in ["latitude", "longitude"]):
+            return "geospatial_query"
+        else:
+            return "Illegal"
+
+
+    def generate_query_and_parse(self, user_input):
+        """
+        Generate a query object based on the identified query type.
         
-    def parse(self, **kwargs):
-        return self._parser.parse(self._text, **kwargs)
-    
-    
+        Args:
+            user_input (str): The input string from the user.
+        
+        Returns:
+            tuple: (query_type, query_object) or ("Illegal", None) if not matched.
+        """
+        query_type = self.identify_query_type(user_input)
+        if query_type == "Illegal":
+            return query_type, None
+        
+        parser = self.parsers.get(query_type)
+        if not parser:
+            return "Illegal", None
+
+        target_fields = parser.fieldname if isinstance(parser.fieldname, list) else [parser.fieldname]
+        
+        try:
+            customization_parser = CustomizationQueryParser(fieldnames=target_fields, fieldname=target_fields[0], schema=parser.schema)
+            parsed_query_data = customization_parser._process_query(user_input)
+            combined_query = customization_parser.combined_parse_query(**parsed_query_data)
+        except ValueError:
+            return "Illegal", None
+
+        return query_type, combined_query if combined_query else (query_type, None)
+    def _apply_fuzzy_matching(self, text, use_fuzzy=True):
+        """Applies fuzzy matching based on user preference."""
+        if use_fuzzy:
+            return " ".join([f"{word}~" for word in text.split()])
+        return text
+
+    #def parse(self,use_fuzzy=False, **kwargs):
+
+        # If the query data is structured as JSON, process it using _process_query
+        #parsed_query_data = self._parser._process_query(self._text)
+        # If combined parsing is needed, handle that here
+        #return self._parser.combined_parse_query(**parsed_query_data)  
+        
 class CustomizationQueryParser(QueryParser):
     
-    def __init__(self, fieldname, schema, **kwargs):
-        super().__init__(fieldname, schema)
+    def __init__(self, fieldnames, schema,latitude_field="latitude", longitude_field="longitude", **kwargs):
+        super().__init__(fieldnames[0], schema)# Initialize the base class with a primary field
+        self.fieldnames = fieldnames #store the targeted fieldname
         self._schema = schema
-        #self.business_column = business_column
-        #self.review_column = review_column
-        #self.latitude_column = latitude_column
-        #self.longitude_column = longitude_column
-        
-        self.business_column = kwargs.get("business_column", "name")
-        self.review_column = kwargs.get("review_column", "text")
-        self.latitude_column = kwargs.get("latitude_column", "latitude")
-        self.longitude_column = kwargs.get("longitude_column", "longitude")
+        self.latitude_field = latitude_field  # Store the field name for latitude
+        self.longitude_field = longitude_field  # Store the field name for longitude
         
         self.add_plugin(FuzzyTermPlugin())
+        
+        #self.business_column = kwargs.get("business_column", "name")
+        #self.review_column = kwargs.get("review_column", "text")
+        #self.latitude_column = kwargs.get("latitude_column", "latitude")
+        #self.longitude_column = kwargs.get("longitude_column", "longitude")
         
         # Check if inputed columns exist in the schema
         #if self.business_column not in schema or self.review_column not in schema or self.latitude_column not in schema or self.longitude_column not in schema:
@@ -46,51 +100,45 @@ class CustomizationQueryParser(QueryParser):
         Returns:
             dict: A processed query ready for use in search.
         """
+        # Convert query_data to a dictionary if it is a JSON string
+        if isinstance(query_data, str):
+            try:
+                query_data = json.loads(query_data)
+            except json.JSONDecodeError:
+                raise ValueError("Invalid JSON input format.")
         
-        query_data = json.loads(query_data)
-        
-        # Initialize processed_query to store processed results
         processed_queries = {}
+        
+        # Process text field (which corresponds to search terms)
+        if "text" in query_data:
+            processed_queries["search_terms"] = self._apply_text_processing(query_data.get("text", "").strip())
+            processed_queries["search_terms"] = self._apply_fuzzy_matching(processed_queries["search_terms"])
 
+        # Process geospatial data separately for geospatial searches
+        if self.latitude_field in query_data and self.longitude_field in query_data:
+            processed_queries["min_latitude"] = query_data.get(self.latitude_field, "")
+            processed_queries["max_latitude"] = query_data.get(self.latitude_field, "")
+            processed_queries["min_longitude"] = query_data.get(self.longitude_field, "")
+            processed_queries["max_longitude"] = query_data.get(self.longitude_field, "")
+
+        return processed_queries
         # Process review data
-        if "review_id" in query_data:
-            processed_queries['review_id'] = query_data.get("review_id")
-            processed_queries['text'] = self._apply_text_processing(query_data.get("text", "").strip())
-            processed_queries['text'] = self._apply_fuzzy_matching(processed_queries['text'])
+        #if "review_id" in query_data:
+        #    processed_queries['review_id'] = query_data.get("review_id")
+        #    processed_queries['text'] = self._apply_text_processing(query_data.get("text", "").strip())
+        #    processed_queries['text'] = self._apply_fuzzy_matching(processed_queries['text'])
 
         # Process business data
-        if "business_id" in query_data and "name" in query_data:
-            processed_queries['business_id'] = query_data.get("business_id", "")
-            processed_queries['business_name'] = self._apply_text_processing(query_data.get("name", "").strip())
-            processed_queries['business_name'] = self._apply_fuzzy_matching(processed_queries['business_name'])
-            if query_data.get("latitude") and query_data.get("longitude"): # Ensure latitude and longitude are processed only when both exist
-                processed_queries['business_latitude'] = query_data.get("latitude", "")
-                processed_queries['business_longitude'] = query_data.get("longitude", "")
+        #if "business_id" in query_data and "name" in query_data:
+        #    processed_queries['business_id'] = query_data.get("business_id", "")
+        #    processed_queries['business_name'] = self._apply_text_processing(query_data.get("name", "").strip())
+        #    processed_queries['business_name'] = self._apply_fuzzy_matching(processed_queries['business_name'])
+        #    if query_data.get("latitude") and query_data.get("longitude"): # Ensure latitude and longitude are processed only when both exist
+        #        processed_queries['business_latitude'] = query_data.get("latitude", "")
+        #        processed_queries['business_longitude'] = query_data.get("longitude", "")
         
-            # Normalize hours if present (i dont know if we need below, review,business name and location is enough right? can delete)
-            if 'hours' in query_data:
-                # Parse the hours using the dateparser plugin
-                hours_data = query_data.get("hours", {})
-                normalized_hours = {}
-
-                for day, hours_str in hours_data.items():
-                    # Example format: "Monday: 9:00 AM - 5:00 PM"
-                    parsed_times = search_dates(hours_str)
-                    if parsed_times:
-                        # Extract start and end times from the parsed result
-                        normalized_hours[day] = {
-                            "open": parsed_times[0][1].strftime("%H:%M"),
-                            "close": parsed_times[1][1].strftime("%H:%M") if len(parsed_times) > 1 else None
-                        }
-                    else:
-                        normalized_hours[day] = {"open": None, "close": None}
-
-                processed_queries['business_hours'] = normalized_hours
-            else:
-                processed_queries['business_hours'] = {}
+        #return processed_queries
         
-        return processed_queries
-    
         
     def keyword_search(self, search_words):
         """
@@ -103,7 +151,7 @@ class CustomizationQueryParser(QueryParser):
             query: A Whoosh query object for the combined search across multiple fields.
         """
         # Create a multifield parser for the business name and review columns
-        columns = [self.business_column, self.review_column]
+        columns = [self.fieldname]
         query_parser = MultifieldParser(columns, self._schema)
         query = query_parser.parse(search_words)
         return query
@@ -128,11 +176,12 @@ class CustomizationQueryParser(QueryParser):
         if not (-180 <= min_longitude <= 180 and -180 <= max_longitude <= 180):
             raise ValueError("Longitude must lies between -180 and 180.")
         
-        latitude_range = NumericRange(self.latitude_column, min_latitude, max_latitude)
-        longitude_range = NumericRange(self.longitude_column, min_longitude, max_longitude)
+        latitude_range = NumericRange(self.latitude_field, min_latitude, max_latitude)
+        longitude_range = NumericRange(self.longitude_field, min_longitude, max_longitude)
         
         #using AND condiiton since the business must have a latitude within the specified range and a longitude within the specified range.
         query = And([latitude_range,longitude_range])
+        
         
         return query
     
@@ -170,8 +219,12 @@ class CustomizationQueryParser(QueryParser):
         if not queries:  #if no query 
             return None
     
-        return Or(queries) if combine_with.upper() == "OR" else And(queries)
-    
+        # Combine queries based on the combine_with parameter
+        if len(queries) == 1:
+            return queries[0]  # Return the single query without combining
+        else:
+            return And(queries) if combine_with.upper() == "AND" else Or(queries)
+
     
     def _apply_fuzzy_matching(self, text, use_fuzzy=True):
         """Applies fuzzy matching based on user's need."""
@@ -183,3 +236,4 @@ class CustomizationQueryParser(QueryParser):
         """Applies case folding and stemming"""
         analyzer = StemmingAnalyzer()
         return " ".join([token.text for token in analyzer(text.lower())])  # Case folding and stemming
+    
