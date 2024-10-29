@@ -1,5 +1,6 @@
 from whoosh.fields import ID, TEXT, NUMERIC, STORED
 from whoosh.fields import SchemaClass
+from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 
 
 class ReviewSchema(SchemaClass):
@@ -11,7 +12,7 @@ class ReviewSchema(SchemaClass):
     business_id = STORED()
     stars = STORED()
     date = STORED()
-    text = TEXT(stored=True, phrase=True)
+    text = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer()|LowercaseFilter())
     useful = STORED()
     funny = STORED()
     cool = STORED()
@@ -32,7 +33,7 @@ class BusinessSchema(SchemaClass):
     review_count = STORED()
     is_open = STORED()
     attributes = STORED()
-    categories = TEXT(stored=True, phrase=True)
+    categories = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer()|LowercaseFilter())
     hours = STORED()
 
 class UserSchema(SchemaClass):

@@ -21,19 +21,10 @@ class SearchEngineCmd(cmd.Cmd):
             self._search_engine = search_engine
             
         def do_i(self, arg):
-            """Start a new query input appending to the unsolved list"""
-            raw_query_input = input("Please input your query: ")
-            print(f"Query input: {raw_query_input}")
-            self._search_engine.raw_queries.append(raw_query_input)
-            self._search_engine.parse_raw_query_input(raw_query_input)
-        
-        def do_s(self, arg):
-            """Execute search for all query inputs in the unsolved list"""
-            start_query_idx = self._search_engine.unsolved_idx
-            end_query_idx = len(self._search_engine.raw_queries)
-            for query_idx in range(start_query_idx, end_query_idx):
-                self._search_engine.search_query(query_idx)
-            self._search_engine.unsolved_idx = end_query_idx
+            """Start a new query input and return back result"""
+            raw_query = input("Please input your query: ")
+            query_order = self._search_engine.parse_raw_query(raw_query=raw_query)
+            self._search_engine.search_entry(query_order=query_order)    
         
         def do_exit(self, arg):
             """Exit query mode back to the main shell"""
@@ -59,15 +50,14 @@ class SearchEngineCmd(cmd.Cmd):
         
     def do_q(self, arg):
         """Enter into query mode"""
-        self.QueryInputCmd(self._search_engine).cmdloop()
+        try:
+            self.QueryInputCmd(self._search_engine).cmdloop()
+        except KeyboardInterrupt:
+            self.do_exit(arg)
         
     def do_h(self, arg):
         """List query history and let user to select a query number to get the corresponding search result"""
         print("List query history: ")
-        for idx, query in enumerate(self._search_engine.raw_queries):
-            print(f"{idx}): {query}")
-        
-        query_idx = int(input("Please input a number to get the corresponding result: "))
         
     
     def do_s(self, arg):
@@ -80,11 +70,13 @@ class SearchEngineCmd(cmd.Cmd):
         
     def do_EOF(self, arg):
         """Exit the search engine shell"""
+        self._search_engine.result_file_manager.check_result_file_empty()
         print("Bye!")
         return True
         
     def do_exit(self, arg):
         """Exit the search engine shell"""
+        self._search_engine.result_file_manager.check_result_file_empty()
         print("Bye!")
         return True
         
