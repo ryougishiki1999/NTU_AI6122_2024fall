@@ -1,14 +1,11 @@
 from decimal import Decimal
-from multiprocessing import process
-from matplotlib import use
-from whoosh.qparser import QueryParser, MultifieldParser
-from whoosh.qparser.plugins import FuzzyTermPlugin
-from whoosh.query import And, Or, NumericRange, Phrase, Term, FuzzyTerm
-import json
-from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 
-from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, USE_QUERY_STEMMING, QueryType
-from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
+from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
+from whoosh.query import And, Or, NumericRange, Phrase, Term, FuzzyTerm
+
+from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, \
+    USE_QUERY_STEMMING, QueryType
+
 
 class SpecificQueryConstructor:
     

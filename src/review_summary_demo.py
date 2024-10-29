@@ -1,15 +1,13 @@
-import matplotlib.pyplot as plt
-import pandas as pd
-from collections import Counter
-from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans
+import nltk
 import numpy as np
 import pandas as pd
-import nltk
 from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
 from nltk.probability import FreqDist
+from nltk.tokenize import word_tokenize
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+from searchEngine.engine_config import CA_BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH
 
 # Download NLTK resources (only need to do this once)
 nltk.download('punkt')
@@ -18,7 +16,6 @@ nltk.download('stopwords')
 
 
 #visualisation the distribution of Reviews Contributed by Users
-import matplotlib.pyplot as plt
 
 def viz_review_distribution(df):
     """viz_review_distribution
@@ -189,10 +186,10 @@ def generate_user_review_summary(df,df_business, user_id):
 import json
 
 # Load JSON data from file
-with open('CA_business.json', 'r') as f:
+with open(CA_BUSINESS_DATA_PATH, 'r', encoding='utf-8') as f:
     business_data = json.load(f)
 
-with open('CA_review.json', 'r') as f:
+with open(CA_REVIEW_DATA_PATH, 'r', encoding='utf-8') as f:
     review_data = json.load(f)
 
 # Convert JSON data to a pandas DataFrame
@@ -201,7 +198,7 @@ if review_data:
     df_business = pd.DataFrame(business_data)
     user_id = "uBW16OCkFKvzdezUKZFuUQ" 
     # Generate the user review summary
-    user_summary = generate_user_review_summary(df,df_business, user_id)
+    user_summary = generate_user_review_summary(df, df_business, user_id)
     print("Generated User Review Summary:")
     print(user_summary)
 else:

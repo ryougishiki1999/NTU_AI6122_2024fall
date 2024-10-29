@@ -1,13 +1,13 @@
 import json
 import os.path
+import string
+import time
 
 import nltk
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
-import string
-from nltk.stem import WordNetLemmatizer
 from nltk.stem import PorterStemmer
-import time
+from nltk.stem import WordNetLemmatizer
+from nltk.tokenize import word_tokenize
 
 from searchEngine.engine_config import \
     DATA_PREPROCESS_DIR, ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH, \

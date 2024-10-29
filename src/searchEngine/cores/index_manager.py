@@ -1,17 +1,16 @@
-from typing import Generator
-import os
-from enum import Enum
 import json
+import os
 import time
+from typing import Generator
 
 from whoosh import index
 from whoosh.fields import Schema
 
-from searchEngine.engine_config import INDEX_DIR, INDEX_DIR_FLAG_FILE,\
+from searchEngine.engine_config import INDEX_DIR, INDEX_DIR_FLAG_FILE, \
     BUSINESS_DOC_NUM, REVIEW_DOC_NUM, USER_DOC_NUM, \
-        USE_SKIP_INDEX_BUILDING
-        
+    USE_SKIP_INDEX_BUILDING
 from searchEngine.engine_config import IndexNames
+
 
 class IndexManagerSingleton:
     _instance = None

@@ -1,6 +1,7 @@
 import os
-from enum import Enum
 from datetime import datetime
+from enum import Enum
+
 from whoosh.scoring import TF_IDF
 
 search_engine_dir = os.path.dirname(os.path.abspath(__file__))
@@ -58,6 +59,8 @@ class QueryType(Enum):
     BUSINESS = (["name","categories"], ["name", "categories", "business_id", "latitude", "longitude"])
     REVIEW = (["text"], ["text", "review_id", "user_id", "business_id"])
     GEOSPATIAL = (["latitude", "longitude"], ["latitude", "longitude", "name", "categories", "business_id"])
+    REVIEW_SUMMARY_USER = (["user_id"], ["user_id", "business_id", "text"])
+    REVIEW_SUMMARY_BUSINESS = (["business_id"], ["business_id", "longitude", "latitude"])
     ILLEGAL = []
     
 QUERY_NON_STEMMING_FIELDS = [

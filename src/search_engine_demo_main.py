@@ -6,22 +6,14 @@ For convenience, just load 1000 json lines from the file "yelp_academic_dataset_
 which means 1000 indexed documents. 
 Adopt the TF-IDF as our scoring function to search the index with the query "wonderful AND experience".
 """
-from ast import And, Index, dump
-from decimal import Decimal
 import json
-from unittest import result
-import ijson
-from numpy import long
-from whoosh.fields import SchemaClass
-from whoosh.fields import ID, TEXT, DATETIME, NUMERIC, STORED
-from whoosh.analysis import StemmingAnalyzer
+from decimal import Decimal
 
-import os, os.path
 from whoosh import index
-from whoosh.writing import AsyncWriter
-from datetime import datetime
+from whoosh.query import And
+from whoosh.query import NumericRange
 
-from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_DIR, IndexNames, QueryType
+from searchEngine.engine_config import INDEX_DIR, IndexNames, QueryType
 
 # design schema
 # class UsageSchema(SchemaClass):
@@ -36,12 +28,10 @@ from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_D
 #     text = TEXT(analyzer=StemmingAnalyzer(), stored=True)
 #     useful = NUMERIC(stored=True,decimal_places=0)
 #     funny = NUMERIC(stored=True,decimal_places=0)
-#     cool = NUMERIC(stored=True,decimal_places=0) 
-
+#     cool = NUMERIC(stored=True,decimal_places=0)
 # index_dir = os.path.join(TMP_DIR, 'indexdir')
 # if not os.path.exists(index_dir):
 #     os.makedirs(index_dir)
-
 # if index.exists_in(index_dir, indexname="usages"):
 #     print("The index usages has already existed.")
 # else:
@@ -50,18 +40,14 @@ from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_D
 #     ix = index.create_in(index_dir, schema=UsageSchema, indexname="usages")
 #     # create_in will delete the existing index with the same name
 #     ix2 = index.create_in(index_dir, UsageSchema, indexname='test')
-
 #     json_file_path = ORIGIN_REVIEW_DATA_PATH
 #     num_lines_to_index = 1000
-
 #     with open(json_file_path, 'r', encoding='utf-8') as f:
 #         writer = AsyncWriter(ix)
 #         for i, line in enumerate(f):
 #             if i >= num_lines_to_index:
 #                 break
-            
 #             review = next(ijson.items(line, ''))
-            
 #             writer.add_document(
 #                 review_id=review['review_id'],
 #                 user_id=review['user_id'],
@@ -75,15 +61,12 @@ from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_D
 #             )
 #         writer.commit()
 #     print("After writer commit, Index created.")
-
-# # # to test whether able to directly open the index 
+# # # to test whether able to directly open the index
 # # # when the same name index has been created
 # # ix = index.open_dir(index_dir, indexname="usages")
-
 # # generate query
 # from whoosh.qparser import QueryParser, MultifieldParser
 # from whoosh.query import Term, And, Or, Not, Phrase
-
 # ix = index.open_dir(index_dir, indexname="usages")
 # parser = MultifieldParser(["text", "useful"],UsageSchema())
 # #parser = QueryParser("text",UsageSchema())
@@ -94,10 +77,8 @@ from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_D
 # # parser.parse(query)
 # # print(str(query))
 # # print(json.dumps(str(query)))
-
 # # execute search and scoring and sorting
 # from whoosh.scoring import TF_IDF
-
 # with ix.searcher(weighting = TF_IDF()) as searcher:
 #     results = searcher.search(query, limit=5)
 #     for i, hit in enumerate(results):
@@ -107,10 +88,6 @@ from searchEngine.engine_config import INDEX_DIR, ORIGIN_REVIEW_DATA_PATH, TMP_D
 #     #     print(json.dumps(dict(hit)))
 #     # for i in range(results.scored_length()):
 #     #     print(f"top-{i+1}: ", results[i], '\n')
-
-from whoosh.query import NumericRange
-from whoosh.query import And
-
 
 
 ix = index.open_dir(INDEX_DIR, indexname=IndexNames.BUSINESSES.value)

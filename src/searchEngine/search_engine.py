@@ -1,24 +1,16 @@
-from dataclasses import field
-from decimal import Decimal
-from sre_constants import IN
-import ijson
 import json
-import os
+from decimal import Decimal
 
-import whoosh
+import ijson
 
-from searchEngine.cores.index_manager import IndexManagerSingleton, IndexNames
+from searchEngine.cores.index_manager import IndexManagerSingleton
 from searchEngine.cores.query_parser import QueryParserWrapper
 from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
-from searchEngine.cores.searcher_ranking import SearcherAdpater
-from searchEngine.engine_config import BUSINESS_DATA_PATH, INVALID_QUERY_ORDER, REVIEW_DATA_PATH, SEARCHING_WEIGHTING, TOP_K, \
+from searchEngine.engine_config import BUSINESS_DATA_PATH, INVALID_QUERY_ORDER, REVIEW_DATA_PATH, SEARCHING_WEIGHTING, \
+    TOP_K, \
     USER_DATA_PATH
 from searchEngine.engine_config import QueryType, IndexNames
 from searchEngine.utils.result_file_manager import ResultFileManager
-
-from whoosh.qparser import QueryParser
-from whoosh.searching import Searcher
-from whoosh.scoring import TF_IDF, BM25F
 
 
 class SearchEngineSingleton:

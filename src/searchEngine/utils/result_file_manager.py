@@ -1,6 +1,7 @@
-from searchEngine.engine_config import RESULT_FILE_DIR, RESULT_FILE_PATH
 import json
 import os
+
+from searchEngine.engine_config import RESULT_FILE_DIR, RESULT_FILE_PATH
 
 
 class ResultFileManager:

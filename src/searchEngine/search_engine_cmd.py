@@ -1,4 +1,5 @@
 import cmd
+
 from searchEngine.search_engine import SearchEngineSingleton
 
 
@@ -54,6 +55,14 @@ class SearchEngineCmd(cmd.Cmd):
             self.QueryInputCmd(self._search_engine).cmdloop()
         except KeyboardInterrupt:
             self.do_exit(arg)
+            
+    def do_review_summary(self, arg):
+        """Show the summary of review data"""
+        print("Show the summary of review data")
+        user_id = "uBW16OCkFKvzdezUKZFuUQ" 
+        raw_query_data = f"user_id:{user_id}"
+        #query_type, query_data = self._search_engine.parse_raw_query(raw_query=raw_query_data)
+        
         
     def do_h(self, arg):
         """List query history and let user to select a query number to get the corresponding search result"""

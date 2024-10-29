@@ -1,6 +1,6 @@
+from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 from whoosh.fields import ID, TEXT, NUMERIC, STORED
 from whoosh.fields import SchemaClass
-from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 
 
 class ReviewSchema(SchemaClass):
@@ -8,7 +8,7 @@ class ReviewSchema(SchemaClass):
     Schema for the reviews index.
     """
     review_id  = STORED()
-    user_id = STORED()
+    user_id = ID(stored=True)
     business_id = STORED()
     stars = STORED()
     date = STORED()
