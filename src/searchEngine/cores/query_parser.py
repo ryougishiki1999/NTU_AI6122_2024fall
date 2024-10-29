@@ -5,7 +5,6 @@ from whoosh.qparser import QueryParser, MultifieldParser
 from whoosh.qparser.plugins import FuzzyTermPlugin
 from whoosh.query import And, Or, NumericRange, Phrase, Term, FuzzyTerm
 import json
-from dateparser.search import search_dates
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 
 from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, USE_QUERY_STEMMING, QueryType
