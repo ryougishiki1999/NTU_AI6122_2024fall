@@ -72,7 +72,7 @@ class IndexManagerSingleton:
         def dump_doc_fields(doc):
             match index_name:
                 case IndexNames.REVIEWS:
-                    pass
+                    doc['date'] = json.dumps(doc['date'])
                 case IndexNames.BUSINESSES:
                     # 处理 hours 字段
                     if 'hours' in doc:
