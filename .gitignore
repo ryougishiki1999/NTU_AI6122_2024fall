@@ -6,6 +6,7 @@ tmp/
 .idea/
 .vscode/
 *.code-workspace
+.DS_Store
 
 
 ## Python.gitignore
