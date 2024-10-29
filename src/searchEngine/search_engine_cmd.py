@@ -64,7 +64,7 @@ class SearchEngineCmd(cmd.Cmd):
         """Save all search results into a file"""
         print("Save all search results into a file")
         
-    def do_help(self, arg: str):
+    def do_help(self, arg):
         """Show help commands"""
         return super().do_help(arg)
         

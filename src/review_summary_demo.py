@@ -16,16 +16,16 @@ nltk.download('punkt')
 nltk.download('stopwords')
 #from preprocessor import DATA_PREPROCESS_DIR, REVIEW_DATA_PATH, BUSINESS_DATA_PATH, USER_DATA_PATH
 
-# Load preprocessed data
-#reviews_df = pd.read_json(REVIEW_DATA_PATH)
-#business_df = pd.read_json(BUSINESS_DATA_PATH)
-#user_df = pd.read_json(USER_DATA_PATH)
-
 
 #visualisation the distribution of Reviews Contributed by Users
 import matplotlib.pyplot as plt
 
 def viz_review_distribution(df):
+    """viz_review_distribution
+
+    Args:
+        df (pd.dataframe): plot x: No. of Reviews Contributed by a User, y: No. of Users Having a Particular No. of Reviews
+    """
     # Count the no. of reviews per user
     user_review_counts = df.groupby('user_id')['review_id'].count()
 
@@ -98,7 +98,6 @@ def create_top_words(df, user_id, n=10):
     # Tokenize, filter stopwords, and count words using NLTK
     all_words = []
     for review in user_reviews:
-        # change to lowercase and tokenize the review text
         words = word_tokenize(review.lower())
         # Filter out stopwords and non-alphabetic words
         filtered_words = [word for word in words if word.isalpha() and word not in stop_words]
@@ -136,7 +135,8 @@ def create_clustered_representative_sentences(df, user_id, n=3, n_clusters=3):
     
     # Apply K-Means clustering
     kmeans_model = KMeans(n_clusters=n_clusters, random_state=42)
-    clusters_pred = kmeans_model.fit_predict(tfidf_matrix)
+    kmeans_model.fit(tfidf_matrix)
+    clusters_pred = kmeans_model.predict(tfidf_matrix)
 
     representative_sentences = []
     # The loop will handle each cluster separately, identifying sentences that belong to the current cluster.
