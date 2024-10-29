@@ -254,24 +254,29 @@ class PreprocessorSingleton:
             print("program has extracted CA from business file already, using", end_time1 - start_time, "seconds")
 
             # 1.2 处理 review 文件
+            print("CA review document starts:....")
             CA_user_id = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)
             end_time2 = time.time()
             print("program has extracted CA from review file already, using", end_time2 - end_time1, "seconds")
 
             # 1.3 处理 user 文件
+            print("CA user document starts:....")
             self.create_user_dataset(ORIGIN_USER_DATA_PATH, CA_user_id)
             end_time3 = time.time()
             print("program has extracted extract CA from user file already, using", end_time3 - end_time2, "seconds")
 
             # 2 对字段进行处理
+            print("business document starts:....")
             self.process_business_segment()
             end_time4 = time.time()
             print("business done,using ", end_time4 - end_time3, "seconds")
 
+            print("review document starts:....")
             self.process_review_segment()
             end_time5 = time.time()
             print("review done,using ",end_time5 - end_time4, "seconds")
 
+            print("user document starts:....")
             self.process_user_segment()
             end_time6 = time.time()
             print("user done",end_time6 - end_time5, "seconds")
