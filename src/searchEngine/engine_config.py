@@ -44,6 +44,8 @@ MIN_MAX_SEP = "/"
 TOP_K = 10
 INVALID_QUERY_ORDER = -1
 SEARCHING_WEIGHTING = TF_IDF()
+REVIEW_SUMMARY_USER_ID = "uBW16OCkFKvzdezUKZFuUQ" # user_id for review summary
+
 USE_SKIP_INDEX_BUILDING = True # True: use index already existed in INDEX_DIR, False: build index from scratch
 USE_QUERY_STEMMING = True # for query_parser, True: use stemming, False: not use stemming
 USE_QUERY_FUZZY = True # for query_parser, True: use fuzzy search, False: not use fuzzy search
@@ -59,10 +61,15 @@ class QueryType(Enum):
     BUSINESS = (["name","categories"], ["name", "categories", "business_id", "latitude", "longitude"])
     REVIEW = (["text"], ["text", "review_id", "user_id", "business_id"])
     GEOSPATIAL = (["latitude", "longitude"], ["latitude", "longitude", "name", "categories", "business_id"])
-    REVIEW_SUMMARY_USER = (["user_id"], ["user_id", "business_id", "text"])
-    REVIEW_SUMMARY_BUSINESS = (["business_id"], ["business_id", "longitude", "latitude"])
+    REVIEW_SUMMARY_ALL_USERS = (["user_id"], [])
+    REVIEW_SUMMARY_SPECIFIC_USER = (["user_id"], ["user_id", "business_id", "text"])
+    REVIEW_SUMMARY_BUSINESS_ID = (["business_id"], ["business_id", "latitude", "longitude"])
     ILLEGAL = []
     
 QUERY_NON_STEMMING_FIELDS = [
     QueryType.BUSINESS.value[0][0],
+]
+
+FACETS_QUERY_TYPES = [
+    QueryType.REVIEW_SUMMARY_ALL_USERS,
 ]

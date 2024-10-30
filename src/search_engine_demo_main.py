@@ -9,6 +9,9 @@ Adopt the TF-IDF as our scoring function to search the index with the query "won
 import json
 from decimal import Decimal
 
+from click import group
+from kiwisolver import Term
+from scipy.datasets import face
 from whoosh import index
 from whoosh.query import And
 from whoosh.query import NumericRange
@@ -110,7 +113,7 @@ query = And([latitude_range_query, longitude_range_query])
 from whoosh.scoring import TF_IDF
 
 with ix.searcher(weighting=TF_IDF()) as searcher:
-    results = searcher.search(query, limit=5, scored=True)
+    results = searcher.search(query, limit=5, scored=True, groupedby=None)
     print(results)
     result_dict_list = []
     for i, hit in enumerate(results):
@@ -138,4 +141,63 @@ json_data = {
 with open('tmp/result_tmp.json', 'w') as f:
     json.dump(json_data, f)
     f.write('\n')
-        
+    
+from whoosh.query import Term
+print("\n\n")
+    
+user_id = "uBW16OCkFKvzdezUKZFuUQ" 
+user_id_query = Term('user_id', user_id)
+
+query
+ix = index.open_dir(INDEX_DIR, indexname=IndexNames.REVIEWS.value)
+with ix.searcher() as searcher:
+    results = searcher.search(user_id_query, limit=None, groupedby=None)
+    print(results)
+    result_dict_list = []
+    for i, hit in enumerate(results):
+        result_dict = {}
+        for snippet_name in QueryType.REVIEW.value[1]:
+            result_dict[snippet_name] = hit[snippet_name]
+        result_dict_list.append(result_dict)
+
+print('\n')
+from whoosh import sorting
+from whoosh.sorting import MultiFacet
+from whoosh.query import Every
+user_id_facet = sorting.FieldFacet('user_id')
+facets = sorting.Facets()
+facets.add_field('user_id')
+facets.add_field('business_id')
+facets.add_facet("user_business", MultiFacet(['user_id', 'business_id']))
+#facets.add_facet('user_id', user_id_facet)
+print(list(facets.items())[0][0])
+print(facets.items()[0])
+exit(0)
+query = Every(fieldname='user_id')
+ix = index.open_dir(INDEX_DIR, indexname=IndexNames.REVIEWS.value)
+review_num_of_user_id_dict = {}
+with ix.searcher() as searcher:
+    results = searcher.search(query, limit=None, groupedby=facets)
+    print(results)
+    for facet_name, _ in facets.items():
+        groups = results.groups(facet_name)
+        #print(groups)
+        for user_id, hits in groups.items():
+            count = len(hits)
+            print(f"user_id: {user_id}, count: {count}")
+            review_num_of_user_id_dict[user_id] = count
+    # print(results)
+    # result_dict_list = []
+    # for i, hit in enumerate(results):
+    #     result_dict = {}
+    #     print(hit)
+print(len(review_num_of_user_id_dict))
+max_key = max(review_num_of_user_id_dict, key=review_num_of_user_id_dict.get)
+print(f"user_id: {max_key}, count: {review_num_of_user_id_dict[max_key]}")
+min_key = min(review_num_of_user_id_dict, key=review_num_of_user_id_dict.get)
+print(f"user_id: {min_key}, count: {review_num_of_user_id_dict[min_key]}")
+
+
+
+
+

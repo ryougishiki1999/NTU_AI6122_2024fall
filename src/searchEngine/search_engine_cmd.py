@@ -1,5 +1,6 @@
 import cmd
 
+from searchEngine.engine_config import REVIEW_SUMMARY_USER_ID
 from searchEngine.search_engine import SearchEngineSingleton
 
 
@@ -59,9 +60,7 @@ class SearchEngineCmd(cmd.Cmd):
     def do_review_summary(self, arg):
         """Show the summary of review data"""
         print("Show the summary of review data")
-        user_id = "uBW16OCkFKvzdezUKZFuUQ" 
-        raw_query_data = f"user_id:{user_id}"
-        #query_type, query_data = self._search_engine.parse_raw_query(raw_query=raw_query_data)
+        self._search_engine.review_summary_manager.run()
         
         
     def do_h(self, arg):
@@ -72,6 +71,11 @@ class SearchEngineCmd(cmd.Cmd):
     def do_s(self, arg):
         """Save all search results into a file"""
         print("Save all search results into a file")
+    
+    def do_data_analysis(self, arg):
+        """Start data analysis """
+        print("Start data analysis")
+        #do_data_analysis() 
         
     def do_help(self, arg):
         """Show help commands"""

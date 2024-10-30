@@ -25,6 +25,7 @@ def viz_review_distribution(df):
     """
     # Count the no. of reviews per user
     user_review_counts = df.groupby('user_id')['review_id'].count()
+    print("User Review Counts:", user_review_counts)
 
     # Count the frequency of each unique number of reviews
     review_distribution = user_review_counts.value_counts().sort_index()

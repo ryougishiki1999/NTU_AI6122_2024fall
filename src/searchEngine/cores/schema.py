@@ -21,7 +21,7 @@ class ReviewSchema(SchemaClass):
 class BusinessSchema(SchemaClass):
     """Schema for the business index."""
     
-    business_id = STORED()
+    business_id = ID(stored=True)
     name = TEXT(stored=True, phrase=True)
     address = STORED()
     city = STORED()
