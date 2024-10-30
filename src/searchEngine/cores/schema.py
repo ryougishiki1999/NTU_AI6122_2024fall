@@ -7,12 +7,12 @@ class ReviewSchema(SchemaClass):
     """
     Schema for the reviews index.
     """
-    review_id  = STORED()
+    review_id = STORED()
     user_id = ID(stored=True)
     business_id = STORED()
     stars = STORED()
     date = STORED()
-    text = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer()|LowercaseFilter())
+    text = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer() | LowercaseFilter())
     useful = STORED()
     funny = STORED()
     cool = STORED()
@@ -20,7 +20,7 @@ class ReviewSchema(SchemaClass):
 
 class BusinessSchema(SchemaClass):
     """Schema for the business index."""
-    
+
     business_id = ID(stored=True)
     name = TEXT(stored=True, phrase=True)
     address = STORED()
@@ -33,8 +33,9 @@ class BusinessSchema(SchemaClass):
     review_count = STORED()
     is_open = STORED()
     attributes = STORED()
-    categories = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer()|LowercaseFilter())
+    categories = TEXT(stored=True, phrase=True, analyzer=StemmingAnalyzer() | LowercaseFilter())
     hours = STORED()
+
 
 class UserSchema(SchemaClass):
     """Schema for the user index."""

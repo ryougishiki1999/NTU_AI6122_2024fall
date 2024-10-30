@@ -12,7 +12,8 @@ from nltk.tokenize import word_tokenize
 from searchEngine.engine_config import \
     DATA_PREPROCESS_DIR, ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH, \
     REVIEW_DATA_PATH, BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH, \
-    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USE_SKIP_PREPROCESSING, USER_DATA_PATH, DATA_CA_DIR, \
+    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USE_SKIP_PREPROCESSING, USER_DATA_PATH, \
+    DATA_CA_DIR, \
     BUSINESS_DOC_NUM, REVIEW_DOC_NUM, USER_DOC_NUM, \
     ORIGINAL_BUSINESS_DOC_NUM, ORIGINAL_REVIEW_DOC_NUM, ORIGINAL_USER_DOC_NUM
 
@@ -274,9 +275,9 @@ class PreprocessorSingleton:
             print("review document starts:....")
             self.process_review_segment()
             end_time5 = time.time()
-            print("review done,using ",end_time5 - end_time4, "seconds")
+            print("review done,using ", end_time5 - end_time4, "seconds")
 
             print("user document starts:....")
             self.process_user_segment()
             end_time6 = time.time()
-            print("user done",end_time6 - end_time5, "seconds")
+            print("user done", end_time6 - end_time5, "seconds")

@@ -2,6 +2,8 @@
 
 ## For Users
 
+
+
 ### How to run the code
 
 #### Conda Environment Preparation
@@ -44,21 +46,13 @@ to **start the search engine**.
 
 Please read the linked doc [workflow](docs/workflow.md)
 
-### RoadMap
+### Project Structure
 
 Please read the linked doc [project_structure](docs/project_structure.md)
 
-#### 1st development cycle
+### Roadmap and POW
 
-Build the basic structure of the project. Accomplish basic components and functions of search engine.
-
-| Module       | Submodule     | Current Maintainer         | Notes                                                                                    |
-|--------------|---------------|----------------------------|------------------------------------------------------------------------------------------|
-| preprocessor | preprocessor  | Li JiaLi                   | Tokenization, case-folding, lemmatization, stop-word removal                             |
-| core         | Index_Manager | Zhou RuoHeng, Dai MengMeng | Design the manager responsible for creating or opening Index, adding documents for Index |
-| core         | Schema        | Zhou RuoHeng, Dai MengMeng | Design the corresponding Schema for the specific Index                                   |
-| core         | Query_Parser  | PanFeng                    | Design Customization query paraser to handle complex query raw input                     |
-| Framework    |               | Zhou RuoHeng               | structure of project, the design of workflow, e.t.c                                      |
+Please read the linked doc [roadmap_and_pow](docs/roadmap_and_pow.md)
 
 ### Misc
 
