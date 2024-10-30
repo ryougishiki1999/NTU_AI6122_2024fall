@@ -1,10 +1,9 @@
 from decimal import Decimal
 
+from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, \
+    USE_QUERY_STEMMING, USE_QUERY_TERM, QueryType
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 from whoosh.query import And, Or, NumericRange, Phrase, Term, FuzzyTerm
-
-from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, \
-    USE_QUERY_STEMMING, QueryType
 
 
 class SpecificQueryConstructor:
@@ -68,11 +67,11 @@ class SpecificQueryConstructor:
                 term_contents, fuzzy_contents = contents
             else:
                 term_contents = contents
-            
+                
             term_words = term_contents.split()
-            term_query = And([Term(fieldname, word) for word in term_words])
-            
-            field_queries.append(term_query)
+            if USE_QUERY_TERM:
+                term_query = And([Term(fieldname, word) for word in term_words])
+                field_queries.append(term_query)
             
             if USE_QUERY_PHRASE:
                 phrase_query = Phrase(fieldname, term_words)

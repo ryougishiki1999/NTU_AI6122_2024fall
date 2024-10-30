@@ -18,22 +18,22 @@ class ReviewSummaryRunner:
                 
     def run(self):
         
-        # all_users_query_type = QueryType.REVIEW_SUMMARY_ALL_USERS
-        # all_users_query_field_name = all_users_query_type.value[0][0]
-        # all_users_query_raw_query_data = all_users_query_field_name + ": count num of reviews with respect to every user id "
-        # all_users_query_data = Every(all_users_query_field_name)
+        all_users_query_type = QueryType.REVIEW_SUMMARY_ALL_USERS
+        all_users_query_field_name = all_users_query_type.value[0][0]
+        all_users_query_raw_query_data = all_users_query_field_name + ": count num of reviews with respect to every user id "
+        all_users_query_data = Every(all_users_query_field_name)
         
-        # all_users_query_order = self._search_engine.insert_query(all_users_query_raw_query_data, \
-        #     all_users_query_type, all_users_query_data)
-        # self._search_engine.search_entry(all_users_query_order)
-        # review_count_by_user_id_dict = self._search_engine.search_results[all_users_query_order]
+        all_users_query_order = self._search_engine.insert_query(all_users_query_raw_query_data, \
+            all_users_query_type, all_users_query_data)
+        self._search_engine.search_entry(all_users_query_order)
+        review_count_by_user_id_dict = self._search_engine.search_results[all_users_query_order]
         
-        # #tmp
-        # print(len(review_count_by_user_id_dict))
-        # argmax_user_id = max(review_count_by_user_id_dict, key=review_count_by_user_id_dict.get)
-        # argmin_user_id = min(review_count_by_user_id_dict, key=review_count_by_user_id_dict.get)
-        # print(f"argmax_user_id: {argmax_user_id}, max review count: {review_count_by_user_id_dict[argmax_user_id]}")
-        # print(f"argmin_user_id: {argmin_user_id}, min review count: {review_count_by_user_id_dict[argmin_user_id]}")
+        #tmp
+        print(len(review_count_by_user_id_dict))
+        argmax_user_id = max(review_count_by_user_id_dict, key=review_count_by_user_id_dict.get)
+        argmin_user_id = min(review_count_by_user_id_dict, key=review_count_by_user_id_dict.get)
+        print(f"argmax_user_id: {argmax_user_id}, max review count: {review_count_by_user_id_dict[argmax_user_id]}")
+        print(f"argmin_user_id: {argmin_user_id}, min review count: {review_count_by_user_id_dict[argmin_user_id]}")
         
         user_id = REVIEW_SUMMARY_USER_ID
         user_id_query_type = QueryType.REVIEW_SUMMARY_SPECIFIC_USER
@@ -64,15 +64,4 @@ class ReviewSummaryRunner:
         longitude_list = [result_dict[longitude_field_name] for result_dict in business_id_results_dict_list]
         print(f"latitude min: {min(latitude_list)}, latitude max: {max(latitude_list)}")
         print(f"longitude min: {min(longitude_list)}, longitude max: {max(longitude_list)}")
-        
-        # rs_user_query_type = QueryType.REVIEW_SUMMARY_SPECIFIC_USER
-        # user_id_field_name = rs_user_query_type.value[0][0]
-        # raw_query_data = user_id_field_name + ":" + user_id
-        # query_data = Term(user_id_field_name, user_id)
-            
-        # rs_user_query_order = self._search_engine.insert_query(raw_query_data, rs_user_query_type, query_data)
-        # self._search_engine.search_entry(rs_user_query_order)
-        # user_data_dict_list = self._search_engine.search_results[rs_user_query_order]
-        # for user_data_dict in user_data_dict_list:
-        #     print(user_data_dict['business_id'])
         

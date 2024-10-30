@@ -12,4 +12,3 @@ if __name__ == "__main__":
         search_engine_cmd.cmdloop()
     except KeyboardInterrupt:
         search_engine_cmd.do_exit(None)
-

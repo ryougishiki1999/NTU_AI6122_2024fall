@@ -8,7 +8,7 @@ from searchEngine.cores.index_manager import IndexManagerSingleton
 from searchEngine.cores.query_parser import QueryParserWrapper
 from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
 from searchEngine.engine_config import BUSINESS_DATA_PATH, FACETS_QUERY_TYPES, INVALID_QUERY_ORDER, REVIEW_DATA_PATH, SEARCHING_WEIGHTING, \
-    TOP_K, \
+    TOP_K, USE_QUERY_FUZZY, USE_QUERY_PHRASE, USE_QUERY_STEMMING, USE_QUERY_TERM, USE_SKIP_INDEX_BUILDING, USE_SKIP_PREPROCESSING, \
     USER_DATA_PATH
 from searchEngine.engine_config import QueryType, IndexNames
 from searchEngine.utils.result_file_manager import ResultFileManager
@@ -23,6 +23,15 @@ class SearchEngineSingleton:
             cls._instance = super(SearchEngineSingleton, cls).__new__(cls)
             cls._instance._initialize()
         return cls._instance
+    
+    def _show_config(self):
+        print("================= Search Engine Configuration ==================")
+        print(f"USE_SKIP_PREPROCESSING: {USE_SKIP_PREPROCESSING}")
+        print(f"USE_SKIP_INDEX_BUILDING: {USE_SKIP_INDEX_BUILDING}")
+        print(f"USE_QUERY_STEMMING: {USE_QUERY_STEMMING}")
+        print(f"USE_QUERY_TERM: {USE_QUERY_TERM}")
+        print(f"USE_QUERY_FUZZY: {USE_QUERY_FUZZY}")
+        print(f"USE_QUERY_PHRASE: {USE_QUERY_PHRASE}")
 
     def _initialize(self):
         # Create the index manager
@@ -59,6 +68,8 @@ class SearchEngineSingleton:
         self.raw_queries = dict()
         self.queries = dict()
         self.search_results = dict()
+        
+        self._show_config()
         
     def insert_query(self, raw_query, query_type, query_data):
         conditions = [

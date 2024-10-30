@@ -46,11 +46,13 @@ INVALID_QUERY_ORDER = -1
 SEARCHING_WEIGHTING = TF_IDF()
 REVIEW_SUMMARY_USER_ID = "uBW16OCkFKvzdezUKZFuUQ" # user_id for review summary
 
+USE_SKIP_PREPROCESSING = True # True: use preprocessed data, False: build preprocessed data from scratch
 USE_SKIP_INDEX_BUILDING = True # True: use index already existed in INDEX_DIR, False: build index from scratch
 USE_QUERY_STEMMING = True # for query_parser, True: use stemming, False: not use stemming
-USE_QUERY_FUZZY = True # for query_parser, True: use fuzzy search, False: not use fuzzy search
-USE_QUERY_PHRASE = False # for query_parser, True: use phrase search, False: not use phrase search
-
+# At least one of TERM, FUZZY and PHRASE must be True.
+USE_QUERY_TERM = False # for query_parser, True: use term search, False: not use term search
+USE_QUERY_FUZZY = False # for query_parser, True: use fuzzy search, False: not use fuzzy search
+USE_QUERY_PHRASE = True # for query_parser, True: use phrase search, False: not use phrase search
 
 class IndexNames(Enum):
     REVIEWS = "reviews"

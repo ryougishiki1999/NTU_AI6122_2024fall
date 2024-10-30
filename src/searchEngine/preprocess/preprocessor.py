@@ -12,7 +12,7 @@ from nltk.tokenize import word_tokenize
 from searchEngine.engine_config import \
     DATA_PREPROCESS_DIR, ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH, \
     REVIEW_DATA_PATH, BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH, \
-    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USER_DATA_PATH, DATA_CA_DIR, \
+    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USE_SKIP_PREPROCESSING, USER_DATA_PATH, DATA_CA_DIR, \
     BUSINESS_DOC_NUM, REVIEW_DOC_NUM, USER_DOC_NUM, \
     ORIGINAL_BUSINESS_DOC_NUM, ORIGINAL_REVIEW_DOC_NUM, ORIGINAL_USER_DOC_NUM
 
@@ -40,7 +40,7 @@ class PreprocessorSingleton:
                 os.path.exists(USER_DATA_PATH):
             self.flag = True
 
-        if not self.flag:
+        if not USE_SKIP_PREPROCESSING or not self.flag:
             # 下载分词包
             nltk.download('punkt_tab')
             # 下载停用词
@@ -241,7 +241,7 @@ class PreprocessorSingleton:
             REVIEW_DATA_PATH: preprocessed review data path
             BUSINESS_DATA_PATH: preprocessed business data
         """
-        if self.flag:
+        if USE_SKIP_PREPROCESSING and self.flag:
             print("Preprocessing has been executed previously")
         else:
             # 1.1 处理 business 文件
