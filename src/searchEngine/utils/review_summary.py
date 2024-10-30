@@ -156,5 +156,6 @@ class ReviewSummaryRunner:
         plt.ylabel("No. of Users Having a Particular No. of Reviews in log scale")
         plt.title("Distribution of Reviews Contributed by Users")
         plt.grid(True, which="both", linestyle="--", linewidth=0.5)
-        plt.show()
         plt.savefig(REVIEW_SUMMARY_DISTRIBUTION_FILE_PATH)
+        plt.show()
+        
