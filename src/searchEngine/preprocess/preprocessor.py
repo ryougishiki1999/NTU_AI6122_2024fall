@@ -5,14 +5,12 @@ import time
 
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem import PorterStemmer
-from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from searchEngine.engine_config import \
     DATA_PREPROCESS_DIR, ORIGIN_REVIEW_DATA_PATH, ORIGIN_BUSINESS_DATA_PATH, \
     REVIEW_DATA_PATH, BUSINESS_DATA_PATH, CA_REVIEW_DATA_PATH, \
-    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, ORIGIN_USER_DATA_PATH, USE_SKIP_PREPROCESSING, USER_DATA_PATH, \
+    CA_USER_DATA_PATH, CA_BUSINESS_DATA_PATH, USE_SKIP_PREPROCESSING, USER_DATA_PATH, \
     DATA_CA_DIR, \
     BUSINESS_DOC_NUM, REVIEW_DOC_NUM, USER_DOC_NUM, \
     ORIGINAL_BUSINESS_DOC_NUM, ORIGINAL_REVIEW_DOC_NUM, ORIGINAL_USER_DOC_NUM
@@ -37,8 +35,8 @@ class PreprocessorSingleton:
             os.mkdir(DATA_PREPROCESS_DIR)
 
         if os.path.exists(REVIEW_DATA_PATH) and \
-                os.path.exists(BUSINESS_DATA_PATH) and \
-                os.path.exists(USER_DATA_PATH):
+                os.path.exists(BUSINESS_DATA_PATH): \
+                # and os.path.exists(USER_DATA_PATH):
             self.flag = True
 
         if not USE_SKIP_PREPROCESSING or not self.flag:
@@ -146,14 +144,15 @@ class PreprocessorSingleton:
                     punctuation = set(string.punctuation)
                     # 去除标点符号
                     clean_tokens = [word for word in filtered_texts if word not in punctuation]
-                    # 词形还原
-                    lemmatizer = WordNetLemmatizer()
-                    lemmatized_texts = [lemmatizer.lemmatize(word) for word in clean_tokens]
-                    # 去除词缀
-                    stemmer = PorterStemmer()
-                    stemmed_texts = [stemmer.stem(word) for word in lemmatized_texts]
+                    # # 词形还原
+                    # lemmatizer = WordNetLemmatizer()
+                    # lemmatized_texts = [lemmatizer.lemmatize(word) for word in clean_tokens]
+                    # # 去除词缀
+                    # stemmer = PorterStemmer()
+                    # stemmed_texts = [stemmer.stem(word) for word in lemmatized_texts]
                     # 统一大小写
-                    processed_texts = [word.lower() for word in stemmed_texts]
+                    # processed_texts = [word.lower() for word in stemmed_texts]
+                    processed_texts = [word.lower() for word in clean_tokens]
                     # 还原成 string 形式
                     processed_texts = ' '.join(processed_texts)
                     item['categories'] = processed_texts
@@ -186,16 +185,17 @@ class PreprocessorSingleton:
                 punctuation = set(string.punctuation)
                 # 去除标点符号
                 clean_tokens = [word for word in filtered_texts if word not in punctuation]
-                # 词形还原
-                lemmatizer = WordNetLemmatizer()
-                lemmatized_texts = [lemmatizer.lemmatize(word) for word in clean_tokens]
-                # 去除词缀
-                # 初始化 stemmer
-                stemmer = PorterStemmer()
-                # 去除词缀
-                stemmed_texts = [stemmer.stem(word) for word in lemmatized_texts]
+                # # 词形还原
+                # lemmatizer = WordNetLemmatizer()
+                # lemmatized_texts = [lemmatizer.lemmatize(word) for word in clean_tokens]
+                # # 去除词缀
+                # # 初始化 stemmer
+                # stemmer = PorterStemmer()
+                # # 去除词缀
+                # stemmed_texts = [stemmer.stem(word) for word in lemmatized_texts]
                 # 统一大小写
-                processed_texts = [word.lower() for word in stemmed_texts]
+                # processed_texts = [word.lower() for word in stemmed_texts]
+                processed_texts = [word.lower() for word in clean_tokens]
                 # 还原成 string 形式
                 processed_texts = ' '.join(processed_texts)
                 item['text'] = processed_texts
@@ -256,15 +256,15 @@ class PreprocessorSingleton:
 
             # 1.2 处理 review 文件
             print("CA review document starts:....")
-            CA_user_id = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)
+            _ = self.create_review_dataset(ORIGIN_REVIEW_DATA_PATH, business_id)
             end_time2 = time.time()
             print("program has extracted CA from review file already, using", end_time2 - end_time1, "seconds")
 
-            # 1.3 处理 user 文件
-            print("CA user document starts:....")
-            self.create_user_dataset(ORIGIN_USER_DATA_PATH, CA_user_id)
+            # # 1.3 处理 user 文件
+            # print("CA user document starts:....")
+            # self.create_user_dataset(ORIGIN_USER_DATA_PATH, CA_user_id)
             end_time3 = time.time()
-            print("program has extracted extract CA from user file already, using", end_time3 - end_time2, "seconds")
+            # print("program has extracted extract CA from user file already, using", end_time3 - end_time2, "seconds")
 
             # 2 对字段进行处理
             print("business document starts:....")
@@ -277,7 +277,7 @@ class PreprocessorSingleton:
             end_time5 = time.time()
             print("review done,using ", end_time5 - end_time4, "seconds")
 
-            print("user document starts:....")
-            self.process_user_segment()
-            end_time6 = time.time()
-            print("user done", end_time6 - end_time5, "seconds")
+            # print("user document starts:....")
+            # self.process_user_segment()
+            # end_time6 = time.time()
+            # print("user done", end_time6 - end_time5, "seconds")

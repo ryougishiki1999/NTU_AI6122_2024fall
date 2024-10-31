@@ -58,6 +58,9 @@ class ReviewSummaryRunner:
         else:
             user_id = REVIEW_SUMMARY_USER_ID
 
+        user_review_count = review_count_by_user_id_dict.get(user_id, None)
+        print(f"User ID f {user_id} has contributed {user_review_count} reviews.")
+
         user_id_query_type = QueryType.REVIEW_SUMMARY_SPECIFIC_USER
         user_id_field_name = user_id_query_type.value[0][0]
         raw_user_id_query_data = user_id_query_type.value[0][0] + ":" + user_id
@@ -157,5 +160,5 @@ class ReviewSummaryRunner:
         plt.title("Distribution of Reviews Contributed by Users")
         plt.grid(True, which="both", linestyle="--", linewidth=0.5)
         plt.savefig(REVIEW_SUMMARY_DISTRIBUTION_FILE_PATH)
-        plt.show()
-        
+        print(f"\nsave the figure to {REVIEW_SUMMARY_DISTRIBUTION_FILE_PATH}")
+        # plt.show()

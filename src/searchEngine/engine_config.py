@@ -41,9 +41,11 @@ RESULT_FILE_DIR = os.path.join(OUT_DIR, 'results')
 RESULT_FILE_PATH = os.path.join(RESULT_FILE_DIR, result_file_name)
 
 REVIEW_SUMMARY_DISTRIBUTION_FILE_PATH = os.path.join(OUT_DIR, 'review_summary_distribution.png')
+DATA_ANALYSIS_RESULT_DIR = os.path.join(OUT_DIR, 'data_analysis')
 
 MIN_MAX_SEP = "/"
 TOP_K = 10
+FUZZY_EDIT_DISTANCE = 2
 INVALID_QUERY_ORDER = -1
 SEARCHING_WEIGHTING = TF_IDF()
 REVIEW_SUMMARY_USER_ID = "uBW16OCkFKvzdezUKZFuUQ"  # specific user_id for review summary
@@ -57,6 +59,7 @@ USE_QUERY_TERM = True  # for query_parser, True: use term search, False: not use
 USE_QUERY_FUZZY = True  # for query_parser, True: use fuzzy search, False: not use fuzzy search
 USE_QUERY_PHRASE = True  # for query_parser, True: use phrase search, False: not use phrase search
 USE_REVIEW_SUMMARY_RANDOM_USER = False  # True: use random user_id for review summary, False: use specific user_id for review summary
+USE_CUSTOMIZATION_WEIGHTING = True  # True: use customized weighting, False: use default weighting
 
 
 class IndexNames(Enum):
@@ -66,9 +69,12 @@ class IndexNames(Enum):
 
 
 class QueryType(Enum):
-    BUSINESS = (["name", "categories"], ["name", "categories", "business_id", "latitude", "longitude"])
-    REVIEW = (["text"], ["text", "review_id", "user_id", "business_id"])
-    GEOSPATIAL = (["latitude", "longitude"], ["latitude", "longitude", "name", "categories", "business_id"])
+    BUSINESS = (
+        ["name", "categories"], ["name", "categories", "business_id", "latitude", "longitude", "stars", "review_count"])
+    REVIEW = (["text"], ["text", "review_id", "user_id", "business_id", "stars"])
+    GEOSPATIAL = (
+        ["latitude", "longitude"],
+        ["latitude", "longitude", "name", "categories", "business_id", "stars", "review_count"])
     REVIEW_SUMMARY_ALL_USERS = (["user_id"], [])
     REVIEW_SUMMARY_SPECIFIC_USER = (["user_id"], ["user_id", "business_id", "text"])
     REVIEW_SUMMARY_BUSINESS_ID = (["business_id"], ["business_id", "latitude", "longitude"])
@@ -77,6 +83,12 @@ class QueryType(Enum):
 
 QUERY_NON_STEMMING_FIELDS = [
     QueryType.BUSINESS.value[0][0],
+]
+
+CUSTOMIZATION_WEIGHTING_QUERY_TYPE = [
+    QueryType.BUSINESS,
+    QueryType.REVIEW,
+    QueryType.GEOSPATIAL,
 ]
 
 FACETS_QUERY_TYPES = [
@@ -91,9 +103,12 @@ def display_config():
     print(f"USE_QUERY_STEMMING: {USE_QUERY_STEMMING}")
     print(f"USE_QUERY_TERM: {USE_QUERY_TERM}")
     print(f"USE_QUERY_FUZZY: {USE_QUERY_FUZZY}")
+    if USE_QUERY_FUZZY:
+        print(f"FUZZY_EDIT_DISTANCE: {FUZZY_EDIT_DISTANCE}")
     print(f"USE_QUERY_PHRASE: {USE_QUERY_PHRASE}")
     print(f"USE_REVIEW_SUMMARY_RANDOM_USER: {USE_REVIEW_SUMMARY_RANDOM_USER}")
     if USE_REVIEW_SUMMARY_RANDOM_USER:
         print("REVIEW_SUMMARY_REVIEW_COUNT_THRESHOLD: ", REVIEW_SUMMARY_RANDOM_REVIEW_COUNT_THRESHOLD)
     if not USE_REVIEW_SUMMARY_RANDOM_USER:
         print(f"REVIEW_SUMMARY_USER_ID: {REVIEW_SUMMARY_USER_ID}")
+    print(f"USE_CUSTOMIZATION_WEIGHTING: {USE_CUSTOMIZATION_WEIGHTING}")

@@ -7,10 +7,11 @@ import whoosh.sorting
 
 from searchEngine.cores.index_manager import IndexManagerSingleton
 from searchEngine.cores.query_parser import QueryParserWrapper
-from searchEngine.cores.schema import BusinessSchema, ReviewSchema, UserSchema
+from searchEngine.cores.schema import BusinessSchema, ReviewSchema
+from searchEngine.cores.weighting_scoring import BusinessWeighting, ReviewWeighting
 from searchEngine.engine_config import BUSINESS_DATA_PATH, FACETS_QUERY_TYPES, INVALID_QUERY_ORDER, REVIEW_DATA_PATH, \
     SEARCHING_WEIGHTING, \
-    TOP_K, USER_DATA_PATH
+    TOP_K, USE_CUSTOMIZATION_WEIGHTING, CUSTOMIZATION_WEIGHTING_QUERY_TYPE
 from searchEngine.engine_config import QueryType, IndexNames
 from searchEngine.utils.result_file_manager import ResultFileManager
 from searchEngine.utils.review_summary import ReviewSummaryRunner
@@ -38,11 +39,11 @@ class SearchEngineSingleton:
         with open(BUSINESS_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
             business_documents = ijson.items(f, 'item')
             self.index_manager.add_documents(IndexNames.BUSINESSES, business_documents)  # 添加业务文档
-        # Create User index
-        self.index_manager.create(IndexNames.USERS, UserSchema)  # 创建用户索引
-        with open(USER_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
-            user_documents = ijson.items(f, 'item')
-            self.index_manager.add_documents(IndexNames.USERS, user_documents)  # 添加用户文档
+        # # Create User index
+        # self.index_manager.create(IndexNames.USERS, UserSchema)  # 创建用户索引
+        # with open(USER_DATA_PATH, 'r', encoding='utf-8') as f:  # 使用相对路径
+        #     user_documents = ijson.items(f, 'item')
+        #     self.index_manager.add_documents(IndexNames.USERS, user_documents)  # 添加用户文档
 
         # Create the QueryParserWrapper
         self.query_parser_wrapper = QueryParserWrapper()
@@ -96,12 +97,26 @@ class SearchEngineSingleton:
         else:
             return INVALID_QUERY_ORDER
 
+    def _select_weighting_method(self, query_type):
+        if USE_CUSTOMIZATION_WEIGHTING and query_type in CUSTOMIZATION_WEIGHTING_QUERY_TYPE:
+            match query_type:
+                case QueryType.BUSINESS:
+                    return BusinessWeighting()
+                case QueryType.REVIEW:
+                    return ReviewWeighting()
+                case QueryType.GEOSPATIAL:
+                    return BusinessWeighting()
+
+        return SEARCHING_WEIGHTING
+
     def _search(self, query_order, index_name: IndexNames, limit=TOP_K, scored=True, facets=None):
         query_type, query = self.queries[query_order]
         snippets_names = query_type.value[1]
 
         ix = self.index_manager.open(index_name=index_name)
-        weighting = SEARCHING_WEIGHTING
+
+        weighting = self._select_weighting_method(query_type)
+
         with ix.searcher(weighting=weighting) as searcher:
             results = searcher.search(query, limit=limit, scored=scored, groupedby=facets)
             print(results)
@@ -130,9 +145,12 @@ class SearchEngineSingleton:
                             review_count = len(hits)
                             review_count_by_user_id[user_id] = review_count
                         self.search_results[query_order] = review_count_by_user_id
-            self.orders[query_order] = True
-
-        self.result_file_manager.write_result2file(query_order=query_order)
+        match query_type:
+            case QueryType.REVIEW | QueryType.BUSINESS | QueryType.GEOSPATIAL:
+                self.orders[query_order] = True
+                self.result_file_manager.write_result2file(query_order=query_order)
+            case _ :
+                pass
 
     def search_entry(self, query_order, limit=TOP_K):
         conditions = [
@@ -162,3 +180,17 @@ class SearchEngineSingleton:
                     print("query type not supported.")
         else:
             print("query unfound or has been handled.")
+
+    def show_search_history(self):
+        print("Search History:")
+
+        for query_order, query_flag in self.orders.items():
+            if query_flag:
+                raw_query = self.raw_queries[query_order]
+                results = self.search_results[query_order]
+                print("========================================")
+                print(f"Query {query_order}: {raw_query}\n")
+                for rank, result in enumerate(results):
+                    print(f"top-{rank}:", result)
+                print("****************************************")
+                

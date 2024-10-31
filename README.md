@@ -1,34 +1,31 @@
 # [AI6122] Text Data Management and Processing: **Review Data Analysis and Processing**
 
+## Introduction
+
+This project is a search engine for discovering Yelp dataset. It is a course project for AI6122 Text Data Management and Processing. The project is developed by a group of students from NTU MSAI. The project is developed in Python in 2024 Fall Semester.
+
 ## For Users
 
+### Pre-requisite
 
-
-### How to run the code
+- platform: win-x64
+  - tests on mac-arm64 don't pass
+  - tests on linux-x64 are not conducted
+- python: 3.10.15
 
 #### Conda Environment Preparation
 
 After `git clone` this code framework, please first install the required packages **according to `environment.yml` using Conda.**
-run:
-```
-conda env create -n <your_env_name> --file environment.yml
-```
 
-If you need additional packages during your development, please add them in `environment.yml`, then re-create `environment.yml`:
 ```
-conda env export > environment.yml
+conda env create --file environment.yml
 ```
-If you need to update your environment (if there is new version of environment.yml), please run:
-```
-conda env update -f environment.yml
-```
-to update your environment.
 
 #### Dataset Preparation
 
 Consider the dataset is too large to upload to the remote repository, please download the dataset from [yelp](https://www.yelp.com/dataset) and **put `yelp_academic_dataset_business.json` and `yelp_academic_dataset_review.json` and `yelp_academic_dataset_user.json` under the `resource/data` folder.**
 
-#### Run the code
+#### How to run the code
 
 **Firstly, you need to ensure you are in the `master` branch, and your local repository is up-to-date.**
 
@@ -38,9 +35,10 @@ run
 python src/search_engine_main.py
 ```
 to **start the search engine**.
-(The same to `search_engine_demo_main.py`, which is a simple demo to test if your environment can run normally)
 
-## For Collaborators
+please read the linked doc [user_manual](docs/user_manual.md)
+
+## For Collaborators/Contributors
 
 ### Workflow (important!!!)
 

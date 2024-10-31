@@ -3,7 +3,8 @@ from decimal import Decimal
 from whoosh.analysis import StemmingAnalyzer, LowercaseFilter
 from whoosh.query import And, Or, NumericRange, Phrase, Term, FuzzyTerm
 
-from searchEngine.engine_config import MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, USE_QUERY_PHRASE, \
+from searchEngine.engine_config import FUZZY_EDIT_DISTANCE, MIN_MAX_SEP, QUERY_NON_STEMMING_FIELDS, USE_QUERY_FUZZY, \
+    USE_QUERY_PHRASE, \
     USE_QUERY_STEMMING, USE_QUERY_TERM, QueryType
 
 
@@ -21,7 +22,7 @@ class SpecificQueryConstructor:
     def _apply_fuzzy_matching(self, text, use_fuzzy=True):
         """Applies fuzzy matching based on user's need."""
         if use_fuzzy:
-            return (" ".join([f"{word}~1" for word in text.split()])).strip()
+            return (" ".join([f"{word}~{FUZZY_EDIT_DISTANCE}" for word in text.split()])).strip()
         return text
 
     def _process_raw_query(self, raw_query_data: str):

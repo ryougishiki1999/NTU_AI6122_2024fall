@@ -10,8 +10,10 @@ import json
 from decimal import Decimal
 
 from whoosh import index
+from whoosh.qparser import QueryParser
 from whoosh.query import And
 from whoosh.query import NumericRange
+from whoosh.query import Or
 
 from searchEngine.engine_config import INDEX_DIR, IndexNames, QueryType
 
@@ -89,6 +91,65 @@ from searchEngine.engine_config import INDEX_DIR, IndexNames, QueryType
 #     # for i in range(results.scored_length()):
 #     #     print(f"top-{i+1}: ", results[i], '\n')
 
+business_ix = index.open_dir(INDEX_DIR, indexname=IndexNames.BUSINESSES.value)
+business_query = QueryParser("categories", business_ix.schema).parse("chines medicine")
+query = Or([Or([business_query])])
+with business_ix.searcher() as searcher:
+    results = searcher.search(query, limit=5)
+    print(results)
+    for i, hit in enumerate(results):
+        print(hit['name'])
+        print(hit['categories'])
+        print(hit['stars'])
+
+exit(0)
+
+from whoosh.qparser import QueryParser
+from whoosh.scoring import WeightingModel, BaseScorer
+
+
+class CustomWeighting(WeightingModel):
+    def scorer(self, searcher, fieldname, text, qf=1):
+        return CustomScorer(searcher, fieldname, text, qf)
+
+    def final(self, searcher, docnum, score):
+        return score
+
+    def __str__(self):
+        return "CustomWeighting"
+
+
+class CustomScorer(BaseScorer):
+    def __init__(self, searcher, fieldname, text, qf=1):
+        self.searcher = searcher
+        self.fieldname = fieldname
+        self.text = text
+        self.qf = qf
+
+    def score(self, matcher):
+        docnum = matcher.id()
+        doc = self.searcher.stored_fields(docnum)
+        stars = doc.get('stars', 0)
+        text_score = matcher.weight()
+        # 结合文本相关性得分和 stars 字段值
+        return float(stars) * text_score
+
+    def max_quality(self):
+        return float('inf')
+
+
+weighting = CustomWeighting()
+
+review_ix = index.open_dir(INDEX_DIR, indexname=IndexNames.REVIEWS.value)
+query_field_name = 'text'
+query_text = 'wonderful experience'
+query = QueryParser(query_field_name, review_ix.schema).parse(query_text)
+
+with review_ix.searcher(weighting=weighting) as searcher:
+    results = searcher.search(query, limit=5)
+    for i, hit in enumerate(results):
+        print(hit['stars'])
+        print(hit.score)
 
 ix = index.open_dir(INDEX_DIR, indexname=IndexNames.BUSINESSES.value)
 
@@ -171,10 +232,10 @@ facets.add_facet("user_business", MultiFacet(['user_id', 'business_id']))
 # facets.add_facet('user_id', user_id_facet)
 print(list(facets.items())[0][0])
 print(facets.items()[0])
-exit(0)
 query = Every(fieldname='user_id')
 ix = index.open_dir(INDEX_DIR, indexname=IndexNames.REVIEWS.value)
 review_num_of_user_id_dict = {}
+
 with ix.searcher() as searcher:
     results = searcher.search(query, limit=None, groupedby=facets)
     print(results)
