@@ -46,3 +46,11 @@ example:
 ```
 latitude: 34/36, longitude: -118/-120
 ```
+
+## For 3.5 App section
+
+You'd better to run:
+```
+python -m spacy download en_core_web_sm
+```
+to install spacy model.
