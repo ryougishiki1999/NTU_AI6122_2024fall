@@ -2,6 +2,8 @@
 
 ## Introduction
 
+**Github repository Link for this project**: https://github.com/ryougishiki1999/NTU_AI6122_2024fall
+
 This project is a search engine for discovering Yelp dataset. It is a course project for AI6122 Text Data Management and Processing. The project is developed by a group of students from NTU MSAI. The project is developed in Python in 2024 Fall Semester.
 
 ## For Users

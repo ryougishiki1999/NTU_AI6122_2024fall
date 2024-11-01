@@ -23,7 +23,7 @@ Enhance the search engine with more functions and features. Integrate all subtas
 | core           | query_parser         | Zhou RuoHeng, Pan Feng | Improve QueryParser and connect it to search engine       |
 | CLI            |                      | Zhou RuoHeng           | Design the CLI interface for search engine and all in one |
 | core           | weighting_scoring    | Zhou RuoHeng           | develop enhancing scoring and weighting method for 3.3    |
-| review_summary |                      | PanFeng                | For section 3.4 review summary                            |
+| review_summary |                      | PanFeng, Zhou RuoHeng  | For section 3.4 review summary                            |
 | data_analysis  |                      | Lai JunZhe             | For section 3.2 data analysis                             |
 | app            | comparision_sentence | YueShaoShiBais         | For section 3.5 application                               |
 | Framework      |                      | Zhou RuoHeng           | Integrate above modules into search engine and CLI        |
